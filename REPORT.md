@@ -1,4 +1,4 @@
-# MINI-FACE APP :spiral_notebook:
+# MINI-FACE APP :spiral_notepad:
 ## App Structure (GUI)
 ### Login and Register
 When the application starts running, the user will be prompted to login or register if they are not already registered. If they are registered, the user will be directed to his/her news feed. 
