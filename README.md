@@ -15,3 +15,5 @@ The user can be able to post videos and photos as well.
 The user will chat with other users from this page. 
 ### Logout
 The user will log out from this page.
+## Database
+## Network
