@@ -1,19 +1,8 @@
 # MINI-FACE APP
-## App Structure (GUI)
-### Login and Register
-When the application starts running, the user will be prompted to login or register if they are not already registered. If they are registered, the user will be directed to his/her news feed. 
-### News Feed
-The user will be able to look at the posts they have added and also the posts of their friends. 
-The user can also add posts and delete their posts. 
-#### Search (Advanced Feature) 
-The user can also search for friends and visit their news feed. 
-### Writing Post
-The user will write a post here. 
-#### Add Pictures/videos (Advanced Feature)
-The user can be able to post videos and photos as well.
-### Chatting
-The user will chat with other users from this page. 
-### Logout
-The user will log out from this page.
-## Database
-## Network
+A Facebook clone made as part of the course project of the course **CS 433: Computer Networks** offered at **IIT Gandhinagar**. The app uses basic networking paradigms and mimics the basic functionalities and features of Facebook
+
+## Features Offered
+1. Feature 1
+2. Feature 2
+
+## Instructions
