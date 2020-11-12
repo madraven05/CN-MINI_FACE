@@ -6,12 +6,15 @@ A Facebook clone made as part of the course project of the course **CS 433: Comp
 2. Feature 2
 
 ## Instructions
+Clone the repository and run the following commands in the terminal:
 ### Creating a new conda environment
 ```c
 $ conda create --name <env_name>
-$ conda activate <my_env>
+$ conda activate <env_name>
 ```
 ### Installing libraries from requirements.txt
 ```c
 $ pip install -r requirements.txt
+```
+After this run server.py
 ```
