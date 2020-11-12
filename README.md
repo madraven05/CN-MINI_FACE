@@ -6,3 +6,12 @@ A Facebook clone made as part of the course project of the course **CS 433: Comp
 2. Feature 2
 
 ## Instructions
+### Creating a new conda environment
+```c
+$ conda create --name <env_name>
+$ conda activate <my_env>
+```
+### Installing libraries from requirements.txt
+```c
+$ pip install -r requirements.txt
+```

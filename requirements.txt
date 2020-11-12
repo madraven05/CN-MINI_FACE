@@ -1,0 +1,3 @@
+certifi==2020.6.20
+SQLAlchemy @ file:///tmp/build/80754af9/sqlalchemy_1603397987316/work
+CN-MINI_FACE
