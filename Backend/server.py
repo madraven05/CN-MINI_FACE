@@ -1,12 +1,27 @@
 '''
-Python file for the Server
+Python code to define Server
+
+SERVER RESPONSE MESSAGE:
+------------------------
+response_msg = {
+    status_line: {
+        protocol: 'TCP/UDP',
+        status_code: 200/301...
+    },
+    header_lines: {
+        date: date,
+        accept_ranges: bytes,
+        content_length: content_length,
+        keep_alive: {
+            timeout: 10,
+            max: 100
+        },
+        connection: 'keep-alive'
+    }
+    data: data
+}
 '''
-from accounts import signup
-from models import create_tables, show_all_users, User
 
-create_tables()
-
-signup(username="pranshu", password="abcd", id=12)
-signup(username="dhruv", password="abcd", id=123)
-signup(username="kumar", password="abcd", id=124)
-show_all_users(User)
+class Server():
+    def __init__(self):
+        pass
