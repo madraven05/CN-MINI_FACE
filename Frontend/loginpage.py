@@ -7,14 +7,14 @@ from PIL import ImageTk
 from tkinter import messagebox
 
 class LoginPage:
-    def __init__(self,root):
+    def __init__(self,root, client_socket):
         self.root=root
         self.root.title("Login")
         self.root.geometry("910x607")
         self.root.resizable(False,False)
-        self.bg=ImageTk.PhotoImage(file="/home/pranshu/Documents/Acads/CN/Project/MINI_FACE/CN-MINI_FACE/Frontend/templates/Image3.jpg")
+        self.bg=ImageTk.PhotoImage(file="/home/pranshu/Documents/Acads/CN/Project/CN-MINI_FACE/Frontend/templates/Image3.jpg")
         self.bg_image=Label(self.root,image=self.bg).place(x=0,y=0,relwidth=1,relheight=1)
-
+        self.client_socket = client_socket
         #LoginFrame
         Frame_login=Frame(self.root,bg="white")
         Frame_login.place(x=205,y=150,height=340,width=500)
@@ -35,16 +35,4 @@ class LoginPage:
         Login_btn=Button(self.root,command=self.Login_function,cursor="hand2",text="Login",fg="white",bg="#d77337",font=("Times New Roman",20)).place(x=390,y=470,width=180,height=40) 
     
     def Login_function(self):
-        if self.txt_pass.get()=="" or self.txt_user.get()=="":
-            messagebox.showerror("Error","All fields are required.",parent=self.root)
-        elif self.txt_pass.get()!="12345" or self.txt_user.get()!="neel.kirankumar":
-            messagebox.showerror("Error","Invalid Username/Password.",parent=self.root)
-        else:
-            messagebox.showinfo("Welcome",parent=self.root)
-
-
-root=Tk()
-obj=LoginPage(root)
-root.mainloop()
-
-# asjaklsdj asjdaidasidjaskdj asjd sioad aid
+        self.client_socket.send(self.txt_user.get().encode('ascii'))

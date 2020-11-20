@@ -18,13 +18,14 @@ class Server():
     '''
     def create_server_socket(self):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        return server_socket
+        print("Server Socket Created!")
+        return self.server_socket
 
 
     '''
     Bind Socket
     '''
-    def bind_server_socket(self, host):   
+    def bind_server_socket(self):   
         self.server_socket.bind((self.host, self.PORT))
         print("Socket Binded to port {}!".format(self.host))
 
@@ -45,7 +46,7 @@ class Server():
 
         # Client acquires lock
         print_lock.acquire()
-        print("Connected to client: " addr[0])
+        print("Connected to client: ", addr[0])
         return client, addr
 
     '''
@@ -54,10 +55,10 @@ class Server():
     def connect_to_clients(self):
         while(1):
             
-            client, addr = self.server_accept()
+            client, addr = self.server_socket_accept()
             
             # Perform Threaded Send and Receive
-            start_new_thread(self.server_snd_and_rcv(), (client,))
+            start_new_thread(self.server_snd_and_rcv, (client,))
 
         self.server_socket.close()
 
@@ -68,4 +69,6 @@ class Server():
         while(1):
             # Send and Receive
             # Necessary functions for sending and accepting req/response to be added here
+            message = client.recv(1024)
+            print(message)
         client.close()
