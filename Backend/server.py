@@ -39,7 +39,7 @@ from _thread import *
 import threading
 import pickle
 
-from database import user_login, user_register
+from Backend.database import user_login, user_register
 
 print_lock = threading.Lock()
 
@@ -138,7 +138,8 @@ class Server():
             if request:
                 print("object in bytes: ", request)
                 client_req = pickle.loads(request, encoding='utf-8')
-                print(client_req)
+                if client_req['command'] == 'LOGIN':
+                    user_login(client_req['body'])
             else:
                 break
         client.close()
