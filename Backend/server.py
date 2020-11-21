@@ -1,12 +1,77 @@
 '''
 Python code to define Multi-Threaded Server
+
+CLIENT REQUEST MESSAGE:
+------------------------
+req_msg = {
+    command: "LOGIN/LOGOUT/FETCH...",
+    header_lines: {
+        server_id: server_id,
+        accept_encoding: 'utf-8',
+        ... 
+    },
+    body: 'data'
+}
+
+SERVER RESPONSE MESSAGE:
+------------------------
+response_msg = {
+    status_line: {
+        protocol: 'TCP/UDP',
+        status_code: 200/301...
+    },
+    header_lines: {
+        date: date,
+        accept_ranges: bytes,
+        content_length: content_length,
+        keep_alive: {
+            timeout: 10,
+            max: 100
+        },
+        connection: 'keep-alive'
+    }
+    data: data
+}
 '''
 
 import socket
 from _thread import *
 import threading
+import pickle
+
+from database import user_login, user_register
 
 print_lock = threading.Lock()
+
+# Client Request Message
+client_req_msg = {
+    "command": "",
+    "header_lines": {
+        "server_id": 12345,
+        "accept_encoding": 'utf-8',
+    },
+    "body": ""
+}
+
+# Server Response Message
+server_response_msg = {
+    "status_line": {
+        "protocol": 'TCP',
+        "status_code": 1
+    },
+    "header_lines": {
+        "date": "",
+        "accept_ranges": bytes,
+        "content_length": 0,
+        "keep_alive": {
+            "timeout": 10,
+            "max": 100
+        },
+        "connection": 'keep-alive'
+    },
+    "data": ""
+}
+
 
 class Server():
     def __init__(self, PORT, host):
@@ -69,6 +134,11 @@ class Server():
         while(1):
             # Send and Receive
             # Necessary functions for sending and accepting req/response to be added here
-            message = client.recv(1024)
-            print(message)
+            request = client.recv(1024)
+            if request:
+                print("object in bytes: ", request)
+                client_req = pickle.loads(request, encoding='utf-8')
+                print(client_req)
+            else:
+                break
         client.close()

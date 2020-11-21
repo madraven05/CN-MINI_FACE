@@ -9,5 +9,3 @@ client = Client(host, PORT)
 
 client.create_client_socket()
 client.client_socket_connect()
-
-client.client_snd_and_rcv()

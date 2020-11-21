@@ -6,7 +6,7 @@ import socket
 from tkinter import *
 from PIL import ImageTk
 from tkinter import messagebox
-from Frontend.loginpage import LoginPage
+from Frontend.loginreg import LoginPage
 
 class Client():
     def __init__(self, host, PORT):
