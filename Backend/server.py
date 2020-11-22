@@ -38,8 +38,12 @@ import socket
 from _thread import *
 import threading
 import pickle
+import datetime
 
 from Backend.database import user_login, user_register
+
+SUCCESS = 200
+FAILURE = 404
 
 print_lock = threading.Lock()
 
@@ -123,6 +127,7 @@ class Server():
             client, addr = self.server_socket_accept()
             
             # Perform Threaded Send and Receive
+            print_lock.acquire() # Acquire lock
             start_new_thread(self.server_snd_and_rcv, (client,))
 
         self.server_socket.close()
@@ -155,7 +160,11 @@ class Server():
                 client_req_body = client_req['body']
                 client_req_body = client_req_body.split('\n')
                 
+                
+                
+                ###########################################
                 # If command is LOGIN
+                ###########################################
                 if client_req['command'] == 'LOGIN':
                     username, password = self.get_login_details(client_req_body)
                     if user_login(username, password):
@@ -163,11 +172,31 @@ class Server():
                         print("User Login Successful!")
                         
                         # Send Server Response
+                        server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                        server_response_msg["status_line"]["status_code"] = SUCCESS # Success status code set!
+                        server_response_msg['data'] = ""
+
+                        server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                        print(server_reponse)
+                        client.send(server_reponse) # Send to client! 
+
 
                     else:
+                        server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                        server_response_msg["status_line"]["status_code"] = FAILURE # Success status code set!
+                        server_response_msg['data'] = ""
+                        
+                        server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                        print(server_reponse)
+                        client.send(server_reponse) # Send to client!
+
                         print("User Login Failed! :(")
                 
+                
+                
+                ##############################################
                 # If command is REGISTER
+                ##############################################
                 elif client_req['command'] == 'REGISTER':
                     
                     # print(client_req_body)
@@ -181,6 +210,7 @@ class Server():
                         print("User Registration Failed! :(")
                     
             else:
+                print_lock.release() # Release Lock here!
                 break
         client.close()
 

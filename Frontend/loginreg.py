@@ -2,7 +2,7 @@ from tkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
-from Backend.server import client_req_msg
+from Backend.server import client_req_msg, SUCCESS, FAILURE
 import pickle
 
 class LoginPage:
@@ -34,6 +34,9 @@ class LoginPage:
         Reg_btn=Button(Frame_login,command= self.register, cursor="hand2",text="Create Your Account!",bg="white",fg="#d77337",bd=0,font=("Times New Roman",12)).place(x=70,y=280) 
         Login_btn=Button(self.root,command=self.Login_function,cursor="hand2",text="Login",fg="white",bg="#d77337",font=("Times New Roman",20)).place(x=390,y=470,width=180,height=40) 
     
+    '''
+    Login Function for the GUI
+    '''
     def Login_function(self):
         if self.txt_pass.get()=="" or self.txt_user.get()=="":
             messagebox.showerror("Error","All fields are required.",parent=self.root)
@@ -47,10 +50,19 @@ class LoginPage:
             self.client_socket.send(client_req) 
             
             # Receive Server Response and show success message!
-            
+            server_response = self.client_socket.recv(1024) # receive from server
+            server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
 
-            messagebox.showinfo("Information sent to server",parent=self.root)
-
+            if server_response['status_line']['status_code'] == SUCCESS:
+                # Login Successful!
+                messagebox.showinfo("Login Successful!",parent=self.root)
+                
+                # Move to homepage
+                print("Login Successful!")
+            else:
+                # Login Failed
+                messagebox.showinfo("Login Failed! :(",parent=self.root)
+                print("Login Failed! :(")
             
 
     # second window (registration window)
@@ -114,4 +126,4 @@ class RegisterPage:
             client_req_msg['body'] = self.txt_fname.get() + '\n' + self.txt_lname.get() + '\n' + self.txt_username.get() + '\n' + self.txt_password.get()
             client_req = pickle.dumps(client_req_msg) # Conver client req msg to bytes
             self.client_socket.send(client_req)
-            # pass
+            

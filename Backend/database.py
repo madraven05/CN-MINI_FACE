@@ -44,14 +44,7 @@ def user_register(fname, lname, username, user_password):
 Function to check user in the database and login
 '''
 def user_login(username,password):
-    # Sagar add here the database methods to 
-    # search the databse for a match for username and password
-    # if exists return 1
-    # else return 0
 
-    # Also, I have added a file miniface.sql
-    # Just import this file in localhost/phpmyadmin
-    # It will create the entire database!
     con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
     cur = con.cursor()
     sql = "SELECT * FROM users WHERE username = %s AND user_password = %s"
@@ -76,9 +69,6 @@ def user_login(username,password):
     
 
     con.close()
-
-
-
     
 
 '''

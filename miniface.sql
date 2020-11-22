@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 22, 2020 at 12:31 PM
+-- Generation Time: Nov 22, 2020 at 06:47 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
@@ -20,6 +20,19 @@ SET time_zone = "+00:00";
 --
 -- Database: `miniface`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `posts`
+--
+
+CREATE TABLE `posts` (
+  `author` varchar(50) DEFAULT NULL COMMENT 'author of the post',
+  `title` varchar(100) DEFAULT NULL COMMENT 'title of the post',
+  `content` varchar(500) DEFAULT NULL COMMENT 'content of the post',
+  `published_date` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'published time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -46,10 +59,26 @@ INSERT INTO `users` (`fname`, `lname`, `username`, `user_password`) VALUES
 --
 
 --
+-- Indexes for table `posts`
+--
+ALTER TABLE `posts`
+  ADD KEY `author_post` (`author`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `posts`
+--
+ALTER TABLE `posts`
+  ADD CONSTRAINT `author_post` FOREIGN KEY (`author`) REFERENCES `users` (`username`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
