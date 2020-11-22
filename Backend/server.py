@@ -127,6 +127,20 @@ class Server():
 
         self.server_socket.close()
 
+    def get_registration_details(self, client_req_body):
+        first_name = client_req_body[0]
+        last_name = client_req_body[1]
+        username = client_req_body[2]
+        password = client_req_body[3]
+
+        return first_name, last_name, username, password
+
+    def get_login_details(self, client_req_body):
+        username = client_req_body[0]
+        password = client_req_body[1]
+
+        return username, password
+
     '''
     Server side send and receive
     '''
@@ -136,10 +150,38 @@ class Server():
             # Necessary functions for sending and accepting req/response to be added here
             request = client.recv(1024)
             if request:
-                print("object in bytes: ", request)
+                # print("object in bytes: ", request)
                 client_req = pickle.loads(request, encoding='utf-8')
+                client_req_body = client_req['body']
+                client_req_body = client_req_body.split('\n')
+                
+                # If command is LOGIN
                 if client_req['command'] == 'LOGIN':
-                    user_login(client_req['body'])
+                    username, password = self.get_login_details(client_req_body)
+                    if user_login(username, password):
+                        # Sagar username and password will be sent to user_login function in database.py
+                        print("User Login Successful!")
+                        
+                        # Send Server Response
+
+                    else:
+                        print("User Login Failed! :(")
+                
+                # If command is REGISTER
+                elif client_req['command'] == 'REGISTER':
+                    
+                    # print(client_req_body)
+                    fname, lname, username, password = self.get_registration_details(client_req_body)
+                    
+                    if user_register(fname, lname, username, password):
+                        # Send to client server success Response
+                        print("User Registered!")
+                    
+                    else:
+                        print("User Registration Failed! :(")
+                    
             else:
                 break
         client.close()
+
+        

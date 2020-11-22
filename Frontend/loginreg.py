@@ -42,7 +42,7 @@ class LoginPage:
 
             # Send server the login info as Client Request using client socket
             client_req_msg['command'] = "LOGIN"
-            client_req_msg['body'] = self.txt_user.get() + ',' + self.txt_pass.get()
+            client_req_msg['body'] = self.txt_user.get() + '\n' + self.txt_pass.get()
             client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
             self.client_socket.send(client_req) 
             
@@ -71,7 +71,7 @@ class RegisterPage:
         self.root.geometry("910x607+0+0")
         self.client_socket = client_socket
 
-        #LoginFrame
+        #Register
         Frame_login=Frame(self.root,bg="white")
         Frame_login.place(x=105,y=150,height=340,width=700)
 
@@ -79,25 +79,25 @@ class RegisterPage:
         title=Label(Frame_login,text="Register your account",font=("Impact",35,"bold"),fg="#d77337",bg="white").place(x=70,y=30)
         desc=Label(Frame_login,text="Fill the details",font=("Calibiri",15,"bold"),fg="#d25d17",bg="white").place(x=70,y=100)
     
-        #entry 1
-        lbl=Label(Frame_login,text="Entry1",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=70,y=140)
-        self.txt_entry1=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
-        self.txt_entry1.place(x=70,y=170,width=200,height=35)  
+        # First Name
+        lbl=Label(Frame_login,text="First Name",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=70,y=140)
+        self.txt_fname=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
+        self.txt_fname.place(x=70,y=170,width=200,height=35)  
 
-        #entry 2
-        lbl=Label(Frame_login,text="Entry2",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=350,y=140)
-        self.txt_entry2=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
-        self.txt_entry2.place(x=350,y=170,width=200,height=35)     
+        # Last Name
+        lbl=Label(Frame_login,text="Last Name",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=350,y=140)
+        self.txt_lname=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
+        self.txt_lname.place(x=350,y=170,width=200,height=35)     
     
-        #entry 3
-        lbl_pass=Label(Frame_login,text="Entry3",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=70,y=210)
-        self.txt_entry3=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
-        self.txt_entry3.place(x=70,y=240,width=200,height=35)  
+        # Username
+        lbl_pass=Label(Frame_login,text="Username",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=70,y=210)
+        self.txt_username=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
+        self.txt_username.place(x=70,y=240,width=200,height=35)  
 
-        #entry 4
-        lbl_pass=Label(Frame_login,text="Entry4",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=350,y=210)
-        self.txt_entry4=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
-        self.txt_entry4.place(x=350,y=240,width=200,height=35)   
+        # Password
+        lbl_pass=Label(Frame_login,text="Password",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=350,y=210)
+        self.txt_password=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
+        self.txt_password.place(x=350,y=240,width=200,height=35)   
 
         Go_to_login=Button(Frame_login,cursor="hand2",text="Already have an account?",bg="white",fg="#d77337",bd=0,font=("Times New Roman",12), command = self.root.destroy).place(x=70,y=280)
         Register_button=Button(self.root,command=self.Register_function,cursor="hand2",text="Register",fg="white",bg="#d77337",font=("Times New Roman",20)).place(x=320,y=470,width=180,height=40)
@@ -105,10 +105,13 @@ class RegisterPage:
         
     def Register_function(self):
         check =0
-        if self.txt_entry1.get()=="" or self.txt_entry2.get()=="" or self.txt_entry3.get()=="" or self.txt_entry4.get()=="":
+        if self.txt_fname.get()=="" or self.txt_lname.get()=="" or self.txt_username.get()=="" or self.txt_password.get()=="":
             messagebox.showerror("Error","All fields are required.",parent=self.root)    
 
         else:
             # Send server the register info using the client socket
-            self.client_socket.send(self.txt_entry1.get().encode('utf-8'))
+            client_req_msg['command'] = 'REGISTER'
+            client_req_msg['body'] = self.txt_fname.get() + '\n' + self.txt_lname.get() + '\n' + self.txt_username.get() + '\n' + self.txt_password.get()
+            client_req = pickle.dumps(client_req_msg) # Conver client req msg to bytes
+            self.client_socket.send(client_req)
             # pass
