@@ -52,9 +52,38 @@ def user_login(username,password):
     # Also, I have added a file miniface.sql
     # Just import this file in localhost/phpmyadmin
     # It will create the entire database!
+    con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+    cur = con.cursor()
+    sql = "SELECT * FROM users WHERE username = %s AND user_password = %s"
+        
+    mytuple = (
+        
+        username,
+        password
+    )
+
+    cur.execute(sql,mytuple)
+
+    # print ("%d rows were returned" % (cur.rowcount))
+
+    if cur.rowcount >=1 :    # row already exist  now you can login
+        print(" Now you can login")
+        return 1
+    
+    else :        # row do not exist, cant login
+        print(" User not found")
+        return 0
+    
+
+    con.close()
+
+
+
+    
 
 '''
 Function for user logout
 '''
+
 def user_logout():
     pass
