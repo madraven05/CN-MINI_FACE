@@ -40,7 +40,7 @@ import threading
 import pickle
 import datetime
 
-from Backend.database import user_login, user_register
+from Backend.database import user_login, user_register, publish_post
 
 SUCCESS = 200
 FAILURE = 404
@@ -127,9 +127,9 @@ class Server():
             client, addr = self.server_socket_accept()
             
             # Perform Threaded Send and Receive
-            print_lock.acquire() # Acquire lock
+            # print_lock.acquire() # Acquire lock
             start_new_thread(self.server_snd_and_rcv, (client,))
-
+ 
         self.server_socket.close()
 
     def get_registration_details(self, client_req_body):
@@ -146,6 +146,14 @@ class Server():
 
         return username, password
 
+    def get_post_details(self, client_req_body):
+        author = client_req_body[0]
+        title = client_req_body[1]
+        content = client_req_body[2]
+        published_at = client_req_body[3]
+
+        return author, title, content, published_at
+
     '''
     Server side send and receive
     '''
@@ -154,6 +162,7 @@ class Server():
             # Send and Receive
             # Necessary functions for sending and accepting req/response to be added here
             request = client.recv(1024)
+            # print(request)
             if request:
                 # print("object in bytes: ", request)
                 client_req = pickle.loads(request, encoding='utf-8')
@@ -208,9 +217,30 @@ class Server():
                     
                     else:
                         print("User Registration Failed! :(")
+
+
+                ##############################################
+                # If command is PUBLISH
+                ##############################################
+                elif client_req['command'] == 'PUBLISH':
+
+                    author, title, content, published_at = self.get_post_details(client_req_body)
+                    print("Server received post details!")
+                    # Send Server Response
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    server_response_msg['data'] = ""
+
+                    if publish_post(author, title, content, published_at):
+                        server_response_msg["status_line"]["status_code"] = SUCCESS # Success status code set!
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE # Failure status code set!
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client! 
                     
             else:
-                print_lock.release() # Release Lock here!
+                # print_lock.release() # Release Lock here!
                 break
         client.close()
 

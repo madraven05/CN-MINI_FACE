@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
 from Backend.server import client_req_msg, SUCCESS, FAILURE
 import pickle
+import datetime
 
 class LoginPage:
     def __init__(self,root, client_socket):
@@ -42,11 +43,12 @@ class LoginPage:
             messagebox.showerror("Error","All fields are required.",parent=self.root)
         
         else:
-
+            username = self.txt_user.get()
             # Send server the login info as Client Request using client socket
             client_req_msg['command'] = "LOGIN"
             client_req_msg['body'] = self.txt_user.get() + '\n' + self.txt_pass.get()
             client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
+            print(client_req)
             self.client_socket.send(client_req) 
             
             # Receive Server Response and show success message!
@@ -59,11 +61,50 @@ class LoginPage:
                 
                 # Move to homepage
                 print("Login Successful!")
+                
+                self.root.destroy()
+                # no GUI, terminal pe ask user to write post!
+                self.homepage(username)
+                
+
             else:
                 # Login Failed
                 messagebox.showinfo("Login Failed! :(",parent=self.root)
                 print("Login Failed! :(")
+
+    # Open Homepage
+    def homepage(self, username):
+        # no GUI, terminal pe ask user to write post!
+        print("Homepage Started!", username)
+        while True:
+            print("WRITE POST!")
+
+            title = input("Input Title of the Post: ")
+            content = input("Input Content of the Post: ")
+            published_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            author = username 
+
+            # Send server the Post info as Client Request using client socket
+            client_req_msg['command'] = "PUBLISH"
+            client_req_msg['body'] = author + '\n' + title + '\n' + content + '\n' + published_at 
+            client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
+            self.client_socket.send(client_req)
+            print("Post Sent to Server!")
             
+            # Receive Server Response and show success message!
+            server_response = self.client_socket.recv(1024) # receive from server
+            server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
+            
+            if server_response['status_line']['status_code'] == SUCCESS:
+                print("Post published at: ", published_at)
+            
+            else:
+                print("Post publishing failed! :(")
+                break
+
+
+
+
 
     # second window (registration window)
     def register(self):    

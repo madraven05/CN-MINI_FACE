@@ -77,3 +77,36 @@ Function for user logout
 
 def user_logout():
     pass
+
+
+'''
+Function to return the user object
+'''
+def get_username():
+    pass
+
+'''
+Function to Publish Post
+'''
+def publish_post(author, title, content, published_at):
+    print("Adding Post to database...")
+    try:   #database connectivity
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        cur.execute("insert into posts (author, title, content, published_at) values(%s,%s,%s,%s)", 
+            ( 
+                author, 
+                title, 
+                content,
+                published_at
+            )) 
+        con.commit()
+        con.close()
+
+        print("Post added to database!")
+        return 1
+    
+    except Exception as es:
+        print(f"due to {str(es)}")
+        print("Post publishing failed! :(")
+        return 0
