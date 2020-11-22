@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 22, 2020 at 06:47 PM
+-- Generation Time: Nov 22, 2020 at 08:45 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
@@ -31,8 +31,16 @@ CREATE TABLE `posts` (
   `author` varchar(50) DEFAULT NULL COMMENT 'author of the post',
   `title` varchar(100) DEFAULT NULL COMMENT 'title of the post',
   `content` varchar(500) DEFAULT NULL COMMENT 'content of the post',
-  `published_date` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'published time'
+  `published_at` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'published time'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `posts`
+--
+
+INSERT INTO `posts` (`author`, `title`, `content`, `published_at`) VALUES
+('pranshu.kumar', 'post1', 'content lao!', '2020-11-23 01:09:54'),
+('pranshu.kumar', 'post 2', 'kuch bhi kar de!', '2020-11-23 01:10:34');
 
 -- --------------------------------------------------------
 
