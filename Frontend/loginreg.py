@@ -72,35 +72,11 @@ class LoginPage:
                 messagebox.showinfo("Login Failed! :(",parent=self.root)
                 print("Login Failed! :(")
 
-    # Open Homepage
-    def homepage(self, username):
-        # no GUI, terminal pe ask user to write post!
-        print("Homepage Started!", username)
-        while True:
-            print("WRITE POST!")
 
-            title = input("Input Title of the Post: ")
-            content = input("Input Content of the Post: ")
-            published_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            author = username 
 
-            # Send server the Post info as Client Request using client socket
-            client_req_msg['command'] = "PUBLISH"
-            client_req_msg['body'] = author + '\n' + title + '\n' + content + '\n' + published_at 
-            client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
-            self.client_socket.send(client_req)
-            print("Post Sent to Server!")
-            
-            # Receive Server Response and show success message!
-            server_response = self.client_socket.recv(1024) # receive from server
-            server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
-            
-            if server_response['status_line']['status_code'] == SUCCESS:
-                print("Post published at: ", published_at)
-            
-            else:
-                print("Post publishing failed! :(")
-                break
+    
+        
+       
 
 
 
@@ -114,6 +90,16 @@ class LoginPage:
         app = RegisterPage(master2, self.client_socket)
         
         master2.mainloop()   # second window
+        
+    def homepage(self, username):    
+        
+        master3 = Tk()
+
+        app3 = HomePage(master3, self.client_socket, username)
+        
+        master3.mainloop()   # third window
+        
+    
 
 
 class RegisterPage:
@@ -168,3 +154,76 @@ class RegisterPage:
             client_req = pickle.dumps(client_req_msg) # Conver client req msg to bytes
             self.client_socket.send(client_req)
             
+
+class HomePage:
+    def __init__(self, root, client_socket, username):
+
+        self.root = root 
+        self.username = username
+        self.root.title("Register Window")
+        self.root.geometry("910x607+0+0")
+        self.client_socket = client_socket
+
+        #Register
+        Frame_login=Frame(self.root,bg="white")
+        Frame_login.place(x=105,y=150,height=340,width=700)
+
+
+        title=Label(Frame_login,text="Write Post",font=("Impact",35,"bold"),fg="#d77337",bg="white").place(x=70,y=30)
+        desc=Label(Frame_login,text="Fill the details",font=("Calibiri",15,"bold"),fg="#d25d17",bg="white").place(x=70,y=100)
+    
+        # First Name
+        lbl=Label(Frame_login,text="Title",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=70,y=140)
+        self.txt_title=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
+        self.txt_title.place(x=70,y=170,width=200,height=35)  
+
+        # Last Name
+        lbl=Label(Frame_login,text="Content ",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=350,y=140)
+        self.txt_content=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
+        self.txt_content.place(x=350,y=170,width=200,height=35)     
+    
+           
+
+        Exit=Button(Frame_login,cursor="hand2",text="Exit?",bg="white",fg="#d77337",bd=0,font=("Times New Roman",12), command = self.root.destroy).place(x=70,y=280)
+        Post=Button(self.root,command=self.publish_post(),cursor="hand2",text="Post",fg="white",bg="#d77337",font=("Times New Roman",20)).place(x=320,y=470,width=180,height=40)
+        
+        
+    def publish_post(self):
+        check =0
+        if self.txt_title.get()=="" or self.txt_content.get()=="":
+            messagebox.showerror("Error","All fields are required.",parent=self.root)    
+
+        
+            # Send server the register info using the client socket
+        # title = self.txt_title.get()
+        # content = self.txt_content.get()
+        else:
+            published_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            author = self.username 
+            
+            
+            client_req_msg['command'] = "PUBLISH"
+            client_req_msg['body'] = author + '\n' + self.txt_title.get() + '\n' + self.txt_content.get() + '\n' + published_at 
+            
+            
+            client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
+            self.client_socket.send(client_req)
+            
+                    # Receive Server Response and show success message!
+            server_response = self.client_socket.recv(1024) # receive from server
+            server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
+        
+            if server_response['status_line']['status_code'] == SUCCESS:
+                print("Post published at: ", published_at)
+            
+            else:
+                print("Post publishing failed! :(")
+                    
+           
+            
+            
+            
+            
+
+
+    
