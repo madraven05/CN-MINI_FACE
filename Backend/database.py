@@ -80,10 +80,32 @@ def user_logout():
 
 
 '''
-Function to return the user object
+Function to return the username list
 '''
-def get_username():
-    pass
+def fetch_users():
+    print("Fetching all users...")
+
+    try:
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        sql = "SELECT username FROM users"
+        cur.execute(sql)
+
+        users = cur.fetchall()
+        user_list = []
+        # (('c',), ('nb',), ('pranshu.kumar',), ('sb',))
+        for user in users:
+            user = user[0]
+            user_list.append(user)
+
+        print("Fetching Done!")
+        return user_list
+
+    except Exception as es:
+        print(f"due to {str(es)}")
+        print("Failed! :(")
+        return 0
+
 
 '''
 Function to Publish Post

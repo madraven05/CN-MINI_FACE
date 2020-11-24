@@ -40,7 +40,7 @@ import threading
 import pickle
 import datetime
 
-from Backend.database import user_login, user_register, publish_post
+from Backend.database import user_login, user_register, publish_post, fetch_users
 
 SUCCESS = 200
 FAILURE = 404
@@ -238,6 +238,27 @@ class Server():
                     server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
                     # print(server_reponse)
                     client.send(server_reponse) # Send to client! 
+
+                
+                
+                ##############################################
+                # If command is FETCH_USERS
+                ##############################################
+                elif client_req['command'] == 'FETCH_USERS':
+
+                    users = fetch_users()
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    
+                    if users:
+                        server_response_msg['data'] = users
+                        server_response_msg["status_line"]["status_code"] = SUCCESS
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client! 
+
                     
             else:
                 # print_lock.release() # Release Lock here!
