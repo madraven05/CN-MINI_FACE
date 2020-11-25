@@ -23,30 +23,25 @@ class HomePage:
         self.root.geometry("900x600+0+0")
         self.client_socket = client_socket
 
-        ###################################### show all users ##########################################################################
-        Frame_users=Frame(self.root,bg="gray")
-        Frame_users.place(x=650,y=20,height=700,width=300)
+        self.users = 0
 
-        #Post=Button(Frame_users,cursor="hand2",text="Write Post",bg="white",fg="#d77337",font=("Times New Roman",15), command = self.write_post_page(username)).place(x=300+150,y=50)
-        # Server request - Fetch all users!
-        client_req_msg['command'] = "FETCH_USERS"
-        client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
-        self.client_socket.send(client_req)
-
-        # Server Response -> [username, username, ....]
-        server_response = self.client_socket.recv(1024) # receive from server
-        server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
+        ###################################### search from registered users ##########################################################################
         
-        if server_response['status_line']['status_code'] == SUCCESS:
-            print("Users Fetched!")
+        self.Frame_users=Frame(self.root,bg="gray")
+        self.Frame_users.place(x=650,y=20,height=700,width=300)
 
-            users = server_response['data']
-            
-        else:
-            print("Fetching users failed!");
-            # add message box here!
+        self.txt_search=Entry(self.Frame_users,font=("Times New Roman",15),bg="lightgray")  
+        self.txt_search.place(x=5,y=10,width=200,height=35)
+        search_btn = Button(self.Frame_users,command=self.search_users,cursor="hand2",text="Search",bg="gray",fg="white",font=("Times New Roman",15)).place(x=5,y=60) 
+        search_all_btn = Button(self.Frame_users,command=self.search_all_users,cursor="hand2",text="Search All",bg="gray",fg="white",font=("Times New Roman",15)).place(x=100,y=60) 
+
+        ###############################################################################################################################################
+
+
+
 
         ################################################### fetch all post ##########################################################################
+        
         Frame_posts=Frame(self.root,bg="white")
         Frame_posts.place(x=150,y=50,height=700,width=450)
 
@@ -65,17 +60,13 @@ class HomePage:
             
         else:
             print("Fetching users failed!");
-
+        
+        ###############################################################################################################################################
         
 
-
+        
+        
         ################################################### display data ############################################################################
-        y = 10
-        for user in users:
-            if user != self.username:
-                username=Label(Frame_users,text=user,font=("Impact",10),fg="#d77337",bg="white").place(x=10,y=y)
-                add_friend=Button(Frame_users,cursor="hand2",text="Add Friend",bg="white",fg="#d77337",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
-                y += 30
 
         y = 50
         for post in posts:
@@ -87,10 +78,12 @@ class HomePage:
 
         Post=Button(Frame_posts,command=self.write_post_page,cursor="hand2",text="Write Post",bg="white",fg="#d77337",font=("Times New Roman",15)).place(x=10,y=10)
         
-            # break
+        ###############################################################################################################################################
 
 
-    
+    '''
+    Open Write Post Window
+    '''
     def write_post_page(self):    
         
         master3 = Tk()
@@ -100,21 +93,78 @@ class HomePage:
         
         master3.mainloop()    
 
+
+    '''
+    when 'Search all users' button is clicked
+    '''
+    def search_all_users(self):
+        # Server request - Fetch all users!
+        client_req_msg['command'] = "FETCH_USERS"
+        client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
+        self.client_socket.send(client_req)
+
+        # Server Response -> [username, username, ....]
+        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
+        
+        if server_response['status_line']['status_code'] == SUCCESS:
+            print("Users Fetched!")
+
+            users = server_response['data']
+
+        ################################################### display all users ############################################################################
+        
+            y = 100
+            for user in users:
+                if user != self.username:
+                    username=Label(self.Frame_users,text=user,font=("Impact",10),fg="white",bg="gray").place(x=10,y=y)
+                    add_friend=Button(self.Frame_users,cursor="hand2",text="Add Friend",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
+                    y += 30
+            
+        else:
+            print("Fetching users failed!");
+            # add message box here!
+        
+        ###############################################################################################################################################
+
+
+
+    '''
+    When username in search field is entered
+    '''
+    def search_users(self):
+        # Server request - Fetch all users!
+        client_req_msg['command'] = "FETCH_USER"
+        client_req_msg['body'] = self.txt_search.get().lower() # get the searched user entry
+        print(self.txt_search.get().lower())
+        client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
+        self.client_socket.send(client_req)
+
+        # Server Response -> user or user not found!
+        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
+        
+        if server_response['status_line']['status_code'] == SUCCESS:
+            print("Users Fetched!")
+            searched_user = server_response['data']
+
+            ################################################### display searched users ############################################################################
+        
+            y = 100
+            username=Label(self.Frame_users,text=searched_user,font=("Impact",10),fg="white",bg="gray").place(x=10,y=y)
+            add_friend=Button(self.Frame_users,cursor="hand2",text="Add Friend",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
+        
+            ###############################################################################################################################################
+            
+        else:
+            print("Fetching user failed!");
+            messagebox.showerror("Error","Incorrect username!",parent=self.root)
+    
+
+
+    '''
+    Add friend
+    '''
     def add_friend(self):
         pass
-        
-        # # First Name
-        # lbl=Label(Frame_users,text="Title",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=70,y=140)
-        # self.txt_title=Entry(Frame_users,font=("Times New Roman",15),bg="lightgray")  
-        # self.txt_title.place(x=70,y=170,width=200,height=35)  
-
-        # # Last Name
-        # lbl=Label(Frame_users,text="Content ",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=350,y=140)
-        # self.txt_content=Entry(Frame_users,font=("Times New Roman",15),bg="lightgray")  
-        # self.txt_content.place(x=350,y=170,width=200,height=35)     
-    
-           
-
-        # Exit=Button(Frame_users,cursor="hand2",text="Exit?",bg="white",fg="#d77337",bd=0,font=("Times New Roman",12), command = self.root.destroy).place(x=70,y=280)
-        # Post=Button(self.root,command=self.publish_post,cursor="hand2",text="Post",fg="white",bg="#d77337",font=("Times New Roman",20)).place(x=320,y=470,width=180,height=40)
         

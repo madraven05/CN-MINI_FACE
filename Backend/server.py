@@ -44,7 +44,7 @@ import threading
 import pickle
 import datetime
 from threading import Thread
-from Backend.database import user_login, user_register, publish_post, fetch_users, fetch_posts
+from Backend.database import user_login, user_register, publish_post, fetch_all_users, fetch_user,fetch_posts
 
 SUCCESS = 200
 FAILURE = 404
@@ -191,7 +191,7 @@ class ClientThread(Thread):
                         server_response_msg['data'] = ""
 
                         server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
-                        print(server_reponse)
+                        # print(server_reponse)
                         client.send(server_reponse) # Send to client! 
 
 
@@ -201,7 +201,7 @@ class ClientThread(Thread):
                         server_response_msg['data'] = ""
                         
                         server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
-                        print(server_reponse)
+                        # print(server_reponse)
                         client.send(server_reponse) # Send to client!
 
                         print("User Login Failed! :(")
@@ -251,11 +251,32 @@ class ClientThread(Thread):
                 ##############################################
                 elif client_req['command'] == 'FETCH_USERS':
 
-                    users = fetch_users()
+                    users = fetch_all_users()
                     server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
                     
                     if users:
                         server_response_msg['data'] = users
+                        server_response_msg["status_line"]["status_code"] = SUCCESS
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client! 
+
+
+                ##############################################
+                # If command is FETCH_USER
+                ##############################################
+                elif client_req['command'] == 'FETCH_USER':
+                    
+                    search_username = client_req_body[0]
+                    user = fetch_user(search_username)
+
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    
+                    if user:
+                        server_response_msg['data'] = user
                         server_response_msg["status_line"]["status_code"] = SUCCESS
                     else:
                         server_response_msg["status_line"]["status_code"] = FAILURE

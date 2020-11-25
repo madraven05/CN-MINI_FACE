@@ -86,14 +86,10 @@ def user_login(username,password):
     
     con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
     cur = con.cursor()
-    sql = "SELECT * FROM users WHERE username = %s "
+    sql = "SELECT * FROM users WHERE username = %s"
     
         
-    mytuple = (
-        
-        username
-        
-    )
+    mytuple = (username)
 
     cur.execute(sql,mytuple)
     
@@ -110,14 +106,8 @@ def user_login(username,password):
             
         decrypt_pw = decrypt(decrypt_pw)     # decrypt that encrypted password
         
-    # print(decrypt_pw)    this is original password text
 
-    # print ("%d rows were returned" % (cur.rowcount))
-
-    
-    # print(cur.rowcount)
-
-        if decrypt_pw == password :    # row already exist  now you can login
+        if decrypt_pw == password : # row already exist  now you can login
             print(" Now you can login")
             return 1
         
@@ -129,7 +119,6 @@ def user_login(username,password):
         print(" User not found")
         return 0
     
-
     con.close()
     
 
@@ -137,9 +126,8 @@ def user_login(username,password):
 '''
 Function to return the username list
 '''
-def fetch_users():
+def fetch_all_users():
     print("Fetching all users...")
-
     try:
         con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
         cur = con.cursor()
@@ -160,6 +148,8 @@ def fetch_users():
         print(f"due to {str(es)}")
         print("Failed! :(")
         return 0
+
+    print("Fetching all users done!")
 
 
 '''
@@ -188,6 +178,7 @@ def publish_post(author, title, content, published_at):
         print("Post publishing failed! :(")
         return 0
 
+
 '''
 Function to fetch posts
 '''
@@ -202,7 +193,7 @@ def fetch_posts():
         cur.execute(sql)
         
         posts = cur.fetchall()
-        print(posts)
+        # print(posts)
 
         post_list = []
         # (('neel', 'password', 'encryption', datetime.datetime(2020, 11, 25, 18, 27, 25)), 
@@ -222,4 +213,33 @@ def fetch_posts():
     except Exception as es:
         print(f"due to {str(es)}")
         print("Post fetching failed! :(")
+        return 0
+
+
+'''
+Fetch Searched user
+'''
+def fetch_user(search_username):
+    print("Fetching searched user...")
+
+    try:
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+
+        sql = "SELECT username FROM users WHERE username = %s"
+        
+        mytuple = (
+            search_username
+        )
+        cur.execute(sql, mytuple)
+
+        user = cur.fetchall()
+        
+        user = user[0][0]
+        
+        return user
+
+    except Exception as es:
+        print(f"due to {str(es)}")
+        print("User fetching failed! :(")
         return 0
