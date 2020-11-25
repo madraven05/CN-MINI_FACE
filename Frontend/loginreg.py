@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
 from Backend.server import client_req_msg, SUCCESS, FAILURE
 from Frontend.writepostpage import WritePostPage
+from Frontend.homepage import HomePage
 import pickle
 import datetime
 
@@ -58,19 +59,19 @@ class LoginPage:
 
             if server_response['status_line']['status_code'] == SUCCESS:
                 # Login Successful!
-                messagebox.showinfo("Login Successful!",parent=self.root)
+                messagebox.showinfo('Welcome',"Login Successful!",parent=self.root)
                 
                 # Move to homepage
                 print("Login Successful!")
                 
                 self.root.destroy()
                 # no GUI, terminal pe ask user to write post!
-                self.write_post_page(username)
+                self.home_page(username)
                 
 
             else:
                 # Login Failed
-                messagebox.showinfo("Login Failed! :(",parent=self.root)
+                messagebox.showinfo("Login Failed! :(",'Wrong Username or Password',parent=self.root)
                 print("Login Failed! :(")
 
 
@@ -90,7 +91,14 @@ class LoginPage:
         app3 = WritePostPage(master3, self.client_socket, username)
         
         master3.mainloop()   # third window
+    def home_page(self, username):    
         
+        master4 = Tk()
+
+        app3 = HomePage(master4, self.client_socket, username)
+        
+        master4.mainloop()    
+    
     
 
 

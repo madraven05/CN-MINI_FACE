@@ -8,7 +8,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
 from Backend.server import client_req_msg, SUCCESS, FAILURE
-from Frontend.homepage import HomePage
+#from Frontend.homepage import HomePage
 import pickle
 import datetime
 
@@ -72,13 +72,13 @@ class WritePostPage:
             if server_response['status_line']['status_code'] == SUCCESS:
                 print("Post published at: ", published_at)
 
-                master4 = Tk()
+               # master4 = Tk()
 
-                app4 = HomePage(master4, self.client_socket, self.username)
+              #  app4 = HomePage(master4, self.client_socket, self.username)
 
                 self.root.destroy()
                 
-                master4.mainloop()   # third window
+              #  master4.mainloop()   # third window
 
             
             else:
