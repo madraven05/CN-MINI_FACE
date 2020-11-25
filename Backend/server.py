@@ -8,9 +8,13 @@ req_msg = {
     header_lines: {
         server_id: server_id,
         accept_encoding: 'utf-8',
+        client_id = ''
         ... 
     },
-    body: 'data'
+    body: {
+        'sent_to': ...
+        'text': ...
+    }
 }
 
 SERVER RESPONSE MESSAGE:
@@ -40,7 +44,7 @@ import threading
 import pickle
 import datetime
 from threading import Thread
-from Backend.database import user_login, user_register, publish_post, fetch_users
+from Backend.database import user_login, user_register, publish_post, fetch_users, fetch_posts
 
 SUCCESS = 200
 FAILURE = 404
@@ -252,6 +256,25 @@ class ClientThread(Thread):
                     
                     if users:
                         server_response_msg['data'] = users
+                        server_response_msg["status_line"]["status_code"] = SUCCESS
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client! 
+
+                
+                ##############################################
+                # If command is FETCH_POSTS
+                ##############################################
+                elif client_req['command'] == 'FETCH_POSTS':
+                    
+                    posts = fetch_posts()
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+
+                    if posts:
+                        server_response_msg['data'] = posts
                         server_response_msg["status_line"]["status_code"] = SUCCESS
                     else:
                         server_response_msg["status_line"]["status_code"] = FAILURE

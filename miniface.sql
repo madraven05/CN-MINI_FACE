@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 25, 2020 at 07:39 PM
+-- Generation Time: Nov 25, 2020 at 07:50 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
@@ -20,6 +20,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `miniface`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `posts`
+--
+
+CREATE TABLE `posts` (
+  `author` varchar(50) DEFAULT NULL COMMENT 'author of the post',
+  `title` varchar(100) DEFAULT NULL COMMENT 'title of the post',
+  `content` varchar(500) DEFAULT NULL COMMENT 'content of the post',
+  `published_at` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'published time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `posts`
+--
+
+INSERT INTO `posts` (`author`, `title`, `content`, `published_at`) VALUES
+('neel', 'password', 'encryption', '2020-11-25 18:27:25'),
+('neel ', 'done', 'done', '2020-11-25 18:37:24'),
+('sagar', 'mynewpost', 'uploaded', '2020-11-25 18:40:46'),
+('sagar', 'ghbjnkm', 'cgvhbjnk', '2020-11-25 19:23:47');
 
 -- --------------------------------------------------------
 
@@ -49,10 +72,26 @@ INSERT INTO `users` (`fname`, `lname`, `username`, `encrypt_pw`) VALUES
 --
 
 --
+-- Indexes for table `posts`
+--
+ALTER TABLE `posts`
+  ADD KEY `author_post` (`author`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `posts`
+--
+ALTER TABLE `posts`
+  ADD CONSTRAINT `author_post` FOREIGN KEY (`author`) REFERENCES `users` (`username`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

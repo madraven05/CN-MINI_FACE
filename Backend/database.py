@@ -3,6 +3,8 @@ from cryptography.fernet import Fernet
 
 
 
+
+
 # unique key for encryption and decryption
 
 key = b'wrSpkmSaEi4HxFLZp5Ii_Vsx0hN0RGqnak2sSilOrjo='
@@ -131,13 +133,6 @@ def user_login(username,password):
     con.close()
     
 
-'''
-Function for user logout
-'''
-
-def user_logout():
-    pass
-
 
 '''
 Function to return the username list
@@ -191,4 +186,40 @@ def publish_post(author, title, content, published_at):
     except Exception as es:
         print(f"due to {str(es)}")
         print("Post publishing failed! :(")
+        return 0
+
+'''
+Function to fetch posts
+'''
+def fetch_posts():
+    print("Fetching posts...")
+    
+    try:
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+
+        sql = "SELECT * FROM posts"
+        cur.execute(sql)
+        
+        posts = cur.fetchall()
+        print(posts)
+
+        post_list = []
+        # (('neel', 'password', 'encryption', datetime.datetime(2020, 11, 25, 18, 27, 25)), 
+        # ('neel ', 'done', 'done', datetime.datetime(2020, 11, 25, 18, 37, 24)), 
+        # ('sagar', 'mynewpost', 'uploaded', datetime.datetime(2020, 11, 25, 18, 40, 46)), 
+        # ('sagar', 'ghbjnkm', 'cgvhbjnk', datetime.datetime(2020, 11, 25, 19, 23, 47)))
+
+        for post in posts:
+            username = post[0]
+            title = post[1]
+            content = post[2]
+            datetime = str(post[3])
+            
+            post_list.append([username, title, content, datetime])
+
+        return post_list
+    except Exception as es:
+        print(f"due to {str(es)}")
+        print("Post fetching failed! :(")
         return 0
