@@ -31,7 +31,7 @@ class LoginPage:
         #title=Label(Frame_login,text="Login",font=("Impact",35,"bold"),fg="#d77337",bg="white").place(x=90,y=30)
 
         lbl_pass=Label(Frame_login,text="Password",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=70,y=210)
-        self.txt_pass=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
+        self.txt_pass=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray", show ='*')  
         self.txt_pass.place(x=70,y=240,width=350,height=35)   
 
         Reg_btn=Button(Frame_login,command= self.register, cursor="hand2",text="Create Your Account!",bg="white",fg="#d77337",bd=0,font=("Times New Roman",12)).place(x=70,y=280) 
@@ -135,7 +135,7 @@ class RegisterPage:
 
         # Password
         lbl_pass=Label(Frame_login,text="Password",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=350,y=210)
-        self.txt_password=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
+        self.txt_password=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray", show = '*')  
         self.txt_password.place(x=350,y=240,width=200,height=35)   
 
         Go_to_login=Button(Frame_login,cursor="hand2",text="Already have an account?",bg="white",fg="#d77337",bd=0,font=("Times New Roman",12), command = self.root.destroy).place(x=70,y=280)

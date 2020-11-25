@@ -1,25 +1,60 @@
 import pymysql
+from cryptography.fernet import Fernet
+
+
+
+# unique key for encryption and decryption
+
+key = b'wrSpkmSaEi4HxFLZp5Ii_Vsx0hN0RGqnak2sSilOrjo='
+  
+  
+
+# function for encryption of password
+def encrypt(pw):
+    cipher_suite = Fernet(key)
+    new = pw.encode('UTF-8')
+    ciphered_text = cipher_suite.encrypt(new)   
+    # print(ciphered_text.decode('utf-8')) 
+    return ciphered_text.decode('utf-8')
+
+
+
+# function for decryption of password
+def decrypt(enc_pw):
+    cipher_suite1 = Fernet(key)
+    ciphered_text1 = enc_pw.encode('utf-8')
+    unciphered_text1 = (cipher_suite1.decrypt(ciphered_text1))
+    # print(unciphered_text1.decode('utf-8')) 
+    return unciphered_text1.decode('utf-8')
+
 
 def user_register(fname, lname, username, user_password):
+    
+    
+    # encrypted password 
+    
+    encrypt_pw = encrypt(user_password)
     
     try:   #database connectivity
         con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
         cur = con.cursor()
-        cur.execute("insert into users (fname,lname,username,user_password) values(%s,%s,%s,%s)", 
+        
+        # five entries in database 
+        cur.execute("insert into users (fname,lname,username,encrypt_pw) values(%s,%s,%s,%s,%s)", 
             ( 
                 fname, 
                 lname, 
                 username,
-                user_password
+                encrypt_pw
+                
             )) 
     
-        sql = "SELECT * FROM users WHERE fname = %s AND lname = %s AND username = %s AND user_password = %s"
+        sql = "SELECT * FROM users WHERE fname = %s AND lname = %s AND username = %s"
         
         mytuple = (
             fname,
             lname,
-            username,
-            user_password
+            username
         )
 
         cur.execute(sql,mytuple)
@@ -44,26 +79,51 @@ def user_register(fname, lname, username, user_password):
 Function to check user in the database and login
 '''
 def user_login(username,password):
+    
 
+    
     con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
     cur = con.cursor()
-    sql = "SELECT * FROM users WHERE username = %s AND user_password = %s"
+    sql = "SELECT * FROM users WHERE username = %s "
+    
         
     mytuple = (
         
-        username,
-        password
+        username
+        
     )
 
     cur.execute(sql,mytuple)
+    
+    records = cur.fetchall()
+    
+    decrypt_pw = ""
+    
+    # check if username exist in data base
+    
+    if cur.rowcount >=1:
+        for row in records:
+            # print(row[4])
+            decrypt_pw = row[3]    # get encrypted password of corresponding username 
+            
+        decrypt_pw = decrypt(decrypt_pw)     # decrypt that encrypted password
+        
+    # print(decrypt_pw)    this is original password text
 
     # print ("%d rows were returned" % (cur.rowcount))
 
-    if cur.rowcount >=1 :    # row already exist  now you can login
-        print(" Now you can login")
-        return 1
     
-    else :        # row do not exist, cant login
+    # print(cur.rowcount)
+
+        if decrypt_pw == password :    # row already exist  now you can login
+            print(" Now you can login")
+            return 1
+        
+        else :        # row do not exist, cant login
+            print("Incorrect password")
+            return 0
+        
+    else:
         print(" User not found")
         return 0
     
