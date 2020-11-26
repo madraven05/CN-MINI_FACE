@@ -2,8 +2,8 @@
 -- version 5.0.3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Nov 25, 2020 at 07:50 PM
+-- Host: localhost
+-- Generation Time: Nov 26, 2020 at 09:11 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
@@ -31,18 +31,25 @@ CREATE TABLE `posts` (
   `author` varchar(50) DEFAULT NULL COMMENT 'author of the post',
   `title` varchar(100) DEFAULT NULL COMMENT 'title of the post',
   `content` varchar(500) DEFAULT NULL COMMENT 'content of the post',
-  `published_at` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'published time'
+  `published_at` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'published time',
+  `ownership` int(1) NOT NULL DEFAULT 0 COMMENT 'post ownership'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `posts`
 --
 
-INSERT INTO `posts` (`author`, `title`, `content`, `published_at`) VALUES
-('neel', 'password', 'encryption', '2020-11-25 18:27:25'),
-('neel ', 'done', 'done', '2020-11-25 18:37:24'),
-('sagar', 'mynewpost', 'uploaded', '2020-11-25 18:40:46'),
-('sagar', 'ghbjnkm', 'cgvhbjnk', '2020-11-25 19:23:47');
+INSERT INTO `posts` (`author`, `title`, `content`, `published_at`, `ownership`) VALUES
+('neel', 'password', 'encryption', '2020-11-25 18:27:25', 0),
+('neel ', 'done', 'done', '2020-11-25 18:37:24', 0),
+('sagar', 'mynewpost', 'uploaded', '2020-11-25 18:40:46', 0),
+('sagar', 'ghbjnkm', 'cgvhbjnk', '2020-11-25 19:23:47', 0),
+('pranshu', 'New Post', 'Hello World!', '2020-11-26 01:39:36', 0),
+('pranshu', 'Private', 'Post', '2020-11-27 01:26:03', 0),
+('pranshu', 'pvt', 'post', '2020-11-27 01:27:08', 0),
+('pranshu', 'strictly', 'private', '2020-11-27 01:28:47', 0),
+('pranshu', 'pranshu', 'kumar', '2020-11-27 01:30:27', 0),
+('pranshu', 'akldaksld', 'ansdkjanad', '2020-11-27 01:38:37', 1);
 
 -- --------------------------------------------------------
 

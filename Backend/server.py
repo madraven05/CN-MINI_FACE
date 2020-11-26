@@ -155,8 +155,10 @@ class ClientThread(Thread):
         title = client_req_body[1]
         content = client_req_body[2]
         published_at = client_req_body[3]
-
-        return author, title, content, published_at
+        ownership = client_req_body[4]
+        ownership = int(ownership)
+        # print(type(ownership))
+        return author, title, content, published_at, ownership
 
     '''
     Server side send and receive
@@ -229,13 +231,13 @@ class ClientThread(Thread):
                 ##############################################
                 elif client_req['command'] == 'PUBLISH':
 
-                    author, title, content, published_at = self.get_post_details(client_req_body)
+                    author, title, content, published_at, ownership = self.get_post_details(client_req_body)
                     print("Server received post details!")
                     # Send Server Response
                     server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
                     server_response_msg['data'] = ""
 
-                    if publish_post(author, title, content, published_at):
+                    if publish_post(author, title, content, published_at, ownership):
                         server_response_msg["status_line"]["status_code"] = SUCCESS # Success status code set!
                     else:
                         server_response_msg["status_line"]["status_code"] = FAILURE # Failure status code set!

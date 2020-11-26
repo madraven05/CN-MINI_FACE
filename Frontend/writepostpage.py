@@ -4,6 +4,7 @@ Write Modular (using Functions whenever necessary) and a well commented code!
 '''
 
 from tkinter import *
+from tkinter import font
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
@@ -38,7 +39,12 @@ class WritePostPage:
         lbl=Label(Frame_login,text="Content ",font=("Calibiri",15,"bold"),fg="gray",bg="white").place(x=350,y=140)
         self.txt_content=Entry(Frame_login,font=("Times New Roman",15),bg="lightgray")  
         self.txt_content.place(x=350,y=170,width=200,height=35)     
-    
+
+        self.variable = StringVar(self.root)
+        self.variable.set("Public") # default value
+
+        w = OptionMenu(self.root, self.variable, "Public", "Private", "Strictly Private")
+        w.pack()
            
 
         Exit=Button(Frame_login,cursor="hand2",text="Exit?",bg="white",fg="#d77337",bd=0,font=("Times New Roman",12), command = self.root.destroy).place(x=70,y=280)
@@ -57,9 +63,21 @@ class WritePostPage:
             published_at = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             author = self.username 
             
+            # get ownership
+            ownership = self.variable.get()
+            print(ownership)
+            if ownership.lower() == "public":
+                ownership = 0
+                print("ownership: ", ownership)
+            elif ownership.lower() == "private":
+                ownership = 1
+                print("ownership: ", ownership)
+            elif ownership.lower() == "strictly private":
+                ownership = 2
+                print("ownership: ", ownership)
             
             client_req_msg['command'] = "PUBLISH"
-            client_req_msg['body'] = author + '\n' + self.txt_title.get() + '\n' + self.txt_content.get() + '\n' + published_at 
+            client_req_msg['body'] = author + '\n' + self.txt_title.get() + '\n' + self.txt_content.get() + '\n' + published_at + '\n' + str(ownership)
             
             
             client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes

@@ -155,17 +155,20 @@ def fetch_all_users():
 '''
 Function to Publish Post
 '''
-def publish_post(author, title, content, published_at):
+def publish_post(author, title, content, published_at, ownership):
     print("Adding Post to database...")
+    # print(ownership)
+    # print(type(ownership))
     try:   #database connectivity
         con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
         cur = con.cursor()
-        cur.execute("insert into posts (author, title, content, published_at) values(%s,%s,%s,%s)", 
+        cur.execute("insert into posts (author, title, content, published_at, ownership) values(%s,%s,%s,%s,%s)", 
             ( 
                 author, 
                 title, 
                 content,
-                published_at
+                published_at,
+                ownership
             )) 
         con.commit()
         con.close()
