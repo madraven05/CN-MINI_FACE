@@ -11,6 +11,7 @@ from Backend.server import client_req_msg, SUCCESS, FAILURE
 import pickle
 import datetime
 from Frontend.writepostpage import WritePostPage 
+from Frontend.show_friend_list import Show_friend_list
 class HomePage:
     '''
     Here Posts will be shown
@@ -32,9 +33,10 @@ class HomePage:
 
         self.txt_search=Entry(self.Frame_users,font=("Times New Roman",15),bg="lightgray")  
         self.txt_search.place(x=5,y=10,width=200,height=35)
-        search_btn = Button(self.Frame_users,command=self.search_users,cursor="hand2",text="Search",bg="gray",fg="white",font=("Times New Roman",15)).place(x=5,y=60) 
-        search_all_btn = Button(self.Frame_users,command=self.search_all_users,cursor="hand2",text="Search All",bg="gray",fg="white",font=("Times New Roman",15)).place(x=100,y=60) 
-
+        search_btn = Button(self.Frame_users,command=self.search_users,cursor="hand2",text="Search Name",bg="gray",fg="white",font=("Times New Roman",15)).place(x=5,y=60) 
+        search_all_btn = Button(self.Frame_users,command=self.search_all_users,cursor="hand2",text="All Users",bg="gray",fg="white",font=("Times New Roman",15)).place(x=5,y=200) 
+        Logout=Button(self.Frame_users,cursor="hand2",text="LOGOUT",bg="white",fg="#d77337",bd=0,font=("Times New Roman",12), command = self.root.destroy).place(x=100,y=400)
+      
         ###############################################################################################################################################
 
 
@@ -67,18 +69,22 @@ class HomePage:
         
         
         ################################################### display data ############################################################################
-
-        y = 50
+        # i = 1
+    
+        y = 100
         for post in posts:
-            username = Label(Frame_posts,text='@' + post[0],font=("Impact",8),fg="#d77337",bg="white").place(x=10,y=y)
-            published_at = Label(Frame_posts,text=post[3],font=("Impact",5),fg="gray",bg="white").place(x=50,y=y)
-            title = Label(Frame_posts,text=post[1],font=("Impact",15, "bold"),fg="#d77337",bg="white").place(x=10,y=y+15)
-            content = Label(Frame_posts,text=post[2],font=("Impact",10),fg="#d77337",bg="white").place(x=10,y=y+40)
-            y += 100
+            username = Label(Frame_posts,text= 'By @' + post[0],font=("Times",10),fg="#d77337",bg="white").place(x=10,y=y)
+            published_at = Label(Frame_posts,text= post[3],font=("Times",10),fg="gray",bg="white").place(x=80,y=y)
+            title = Label(Frame_posts,text= '*'  +  ' Title :'+ post[1],font=("Times",10, "bold"),fg="#d77337",bg="white").place(x=10,y=y+20)
+            content = Label(Frame_posts,text=post[2],font=("Times",10),fg="blue",bg="white").place(x=10,y=y+40)
+            y += 70
+            # i += 1
 
-        Post=Button(Frame_posts,command=self.write_post_page,cursor="hand2",text="Write Post",bg="white",fg="#d77337",font=("Times New Roman",15)).place(x=10,y=10)
-        
+        Post=Button(Frame_posts,command=self.write_post_page,cursor="hand2",text="Write Post",bg="white",fg="#d77337",font=("Times New Roman",15)).place(x=40,y=10)
+        text1 = Label(Frame_posts,text= 'New Posts',font=("Times",20),fg="green",bg="white").place(x=10,y=60)
         ###############################################################################################################################################
+          # friend list button
+        My_Friends=Button(Frame_posts,command=self.friends_page,cursor="hand2",text="FRIEND LIST",bg="white",fg="#d77337",font=("Times New Roman",15)).place(x=290,y=10)
 
 
     '''
@@ -92,6 +98,20 @@ class HomePage:
         app3 = WritePostPage(master3, self.client_socket, self.username)
         
         master3.mainloop()    
+
+
+    '''
+    # Another window of friend list  
+    '''
+    
+    def friends_page(self):    
+        
+        master4 = Tk()
+        # print("Username: ", self.user)
+
+        app4 = Show_friend_list(master4, self.client_socket, self.username)
+        
+        master4.mainloop()    
 
 
     '''
@@ -114,11 +134,11 @@ class HomePage:
 
         ################################################### display all users ############################################################################
         
-            y = 100
+            y = 250
             for user in users:
                 if user != self.username:
                     username=Label(self.Frame_users,text=user,font=("Impact",10),fg="white",bg="gray").place(x=10,y=y)
-                    add_friend=Button(self.Frame_users,cursor="hand2",text="Add Friend",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
+                    # add_friend=Button(self.Frame_users,cursor="hand2",text="Add Friend",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
                     y += 30
             
         else:
@@ -152,7 +172,7 @@ class HomePage:
         
             y = 100
             username=Label(self.Frame_users,text=searched_user,font=("Impact",10),fg="white",bg="gray").place(x=10,y=y)
-            add_friend=Button(self.Frame_users,cursor="hand2",text="Add Friend",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
+            # add_friend=Button(self.Frame_users,cursor="hand2",text="Add Friend",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
         
             ###############################################################################################################################################
             

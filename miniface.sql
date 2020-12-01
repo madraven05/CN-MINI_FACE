@@ -2,8 +2,8 @@
 -- version 5.0.3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Nov 26, 2020 at 09:11 PM
+-- Host: 127.0.0.1
+-- Generation Time: Dec 01, 2020 at 10:23 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
@@ -54,6 +54,31 @@ INSERT INTO `posts` (`author`, `title`, `content`, `published_at`, `ownership`) 
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `relationship`
+--
+
+CREATE TABLE `relationship` (
+  `user_one_id` int(11) NOT NULL,
+  `user_two_id` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `action_user` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `relationship`
+--
+
+INSERT INTO `relationship` (`user_one_id`, `user_two_id`, `status`, `action_user`) VALUES
+(1, 2, 0, 1),
+(1, 3, 1, 3),
+(1, 4, 1, 4),
+(1, 5, 0, 5),
+(1, 6, 3, 1),
+(2, 3, 1, 2);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -61,18 +86,19 @@ CREATE TABLE `users` (
   `fname` varchar(50) DEFAULT NULL COMMENT 'user first name',
   `lname` varchar(50) DEFAULT NULL COMMENT 'user last name',
   `username` varchar(50) DEFAULT NULL COMMENT 'user username',
-  `encrypt_pw` varchar(100) NOT NULL
+  `encrypt_pw` varchar(100) NOT NULL,
+  `id` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Table for users';
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`fname`, `lname`, `username`, `encrypt_pw`) VALUES
-('s', 'b', 'sagar', 'gAAAAABfvkTMnXAS2mwipJ-2vp8OG-cnb4Q6FXvnDREMBqlPp1hqUJhUUmJQSJhw4AN8gRczaj3dD-TCfkwK_aDT02tnAMJrrg=='),
-('p', 'k', 'pranshu', 'gAAAAABfvkTabcJilsTWXnz9cBZLOw93iMJhYzC7FoGK3bypm5F1Q6YUYgj4nlveMZ3aM-AXYU8LvEIrXm4SmpSUonMjCVnPrw=='),
-('n', 'p', 'neel', 'gAAAAABfvkTold5hqT9Uz1FkCsPDkumKMaKJRCe7v0fJa-z-GV7hl9L19ZntUH5HcigYRqjUTJDFAljRUqeVzXuLNKTxnFDifQ=='),
-('abcd', 'fgvbh', 'vv', 'gAAAAABfvqIOD-3qasrMXm5b-P-83u6rZ1Nq2rf3pMIUXWuTlxqBQzN1lNjIg1ME2VqxIh8_gwk7bVf2LgmYdjvOS0PIHSxwKQ==');
+INSERT INTO `users` (`fname`, `lname`, `username`, `encrypt_pw`, `id`) VALUES
+('s', 'b', 'sagar', 'gAAAAABfvkTMnXAS2mwipJ-2vp8OG-cnb4Q6FXvnDREMBqlPp1hqUJhUUmJQSJhw4AN8gRczaj3dD-TCfkwK_aDT02tnAMJrrg==', 1),
+('p', 'k', 'pranshu', 'gAAAAABfvkTabcJilsTWXnz9cBZLOw93iMJhYzC7FoGK3bypm5F1Q6YUYgj4nlveMZ3aM-AXYU8LvEIrXm4SmpSUonMjCVnPrw==', 2),
+('n', 'p', 'neel', 'gAAAAABfvkTold5hqT9Uz1FkCsPDkumKMaKJRCe7v0fJa-z-GV7hl9L19ZntUH5HcigYRqjUTJDFAljRUqeVzXuLNKTxnFDifQ==', 3),
+('abcd', 'fgvbh', 'vv', 'gAAAAABfvqIOD-3qasrMXm5b-P-83u6rZ1Nq2rf3pMIUXWuTlxqBQzN1lNjIg1ME2VqxIh8_gwk7bVf2LgmYdjvOS0PIHSxwKQ==', 4);
 
 --
 -- Indexes for dumped tables
@@ -88,7 +114,18 @@ ALTER TABLE `posts`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables

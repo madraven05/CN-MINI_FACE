@@ -44,10 +44,11 @@ import threading
 import pickle
 import datetime
 from threading import Thread
-from Backend.database import user_login, user_register, publish_post, fetch_all_users, fetch_user,fetch_posts
-
+# from Backend.database import user_login, user_register, publish_post, fetch_all_users, fetch_user,fetch_posts
+from Backend.database import * 
 SUCCESS = 200
 FAILURE = 404
+clients={}
 
 #print_lock = threading.Lock()
 
@@ -159,12 +160,21 @@ class ClientThread(Thread):
         ownership = int(ownership)
         # print(type(ownership))
         return author, title, content, published_at, ownership
+    
+    def get_message_details(self, client_req_body):
+        print(client_req_body)
+        username=client_req_body[0]
+        message=client_req_body[1]
+        send_to=client_req_body[2]
+        published_at=client_req_body[3]
+        return username,message,send_to,published_at
 
     '''
     Server side send and receive
     '''
     def server_snd_and_rcv(self, client):
         print("Client Window opened..")
+        self.user_n = ""
         while(1):
             # Send and Receive
             # Necessary functions for sending and accepting req/response to be added here
@@ -183,9 +193,11 @@ class ClientThread(Thread):
                 ###########################################
                 if client_req['command'] == 'LOGIN':
                     username, password = self.get_login_details(client_req_body)
+                    clients.update({username:client})
                     if user_login(username, password):
                         # Sagar username and password will be sent to user_login function in database.py
                         print("User Login Successful!")
+                        self.user_n = username
                         
                         # Send Server Response
                         server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
@@ -307,6 +319,127 @@ class ClientThread(Thread):
                     client.send(server_reponse) # Send to client! 
 
                     
+                ##############################################
+                # If command is FETCH_POSTS
+                ###########################################
+                elif client_req['command'] == 'FETCH_F_1':
+                    
+                
+                    
+                    id1 = user_to_id(self.user_n )
+                    # print(self.user_n )
+                    # print("check")
+                    
+                    # print(id1)
+                    users = friend_list(id1)
+                    # print(users)
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    
+                    if users:
+                        server_response_msg['data'] = users
+                        server_response_msg["status_line"]["status_code"] = SUCCESS
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client! 
+                   
+                   
+                   # not connected users 
+                elif client_req['command'] == 'FETCH_F_2':
+        
+                    id1 = user_to_id(self.user_n )
+                    # print(self.user_n )
+                    # print("check")
+                    
+                    # print(id1)
+                    users = not_connected(id1)
+                    # print(users)
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    
+                    if users:
+                        server_response_msg['data'] = users
+                        server_response_msg["status_line"]["status_code"] = SUCCESS
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client!
+                    
+                    
+                    # pending friend requests 
+                        # not connected users 
+                elif client_req['command'] == 'FETCH_F_3':
+        
+                    id1 = user_to_id(self.user_n )
+                    # print(self.user_n )
+                    # print("check")
+                    
+                    # print(id1)
+                    users = pending_requested_list(id1)
+                    # print(users)
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    
+                    if users:
+                        server_response_msg['data'] = users
+                        server_response_msg["status_line"]["status_code"] = SUCCESS
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client!
+                    
+                    
+
+                elif client_req['command'] == 'FETCH_F_4':
+            
+                    id1 = user_to_id(self.user_n )
+                    # print(self.user_n )
+                    # print("check")
+                    
+                    # print(id1)
+                    users = fr_sent_na(id1)
+                    # print(users)
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    
+                    if users:
+                        server_response_msg['data'] = users
+                        server_response_msg["status_line"]["status_code"] = SUCCESS
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client!
+                    
+                    
+                ##############################################
+                # If command is CHAT
+                ##############################################
+                elif client_req['command']=='SEND_CHAT':
+                    
+                    username, message, send_to, published_at = self.get_message_details(client_req_body)
+                    print(username, message,send_to,published_at)
+                    client1=clients[send_to]##client1 is client socket of the user to whom we wants to message.
+                    finalmessage=username+'-->'+message
+                   
+
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    server_response_msg["status_line"]["status_code"] = SUCCESS # Success status code set!
+                    server_response_msg['data'] = finalmessage
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                        # print(server_reponse)
+                    client1.send(server_reponse)
+                    
+                    
+
+
+                
+                
             else:
                 # print_lock.release() # Release Lock here!
                 break

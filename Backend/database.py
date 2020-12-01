@@ -246,3 +246,229 @@ def fetch_user(search_username):
         print(f"due to {str(es)}")
         print("User fetching failed! :(")
         return 0
+    
+    
+    ###################
+    #######Friends
+    ##################
+    
+    
+    # user name to id
+def user_to_id(username):
+    try:
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+    
+        sql = "SELECT id FROM users WHERE username = %s"
+        
+        mytuple = (
+            username
+        )
+        cur.execute(sql, mytuple)
+
+        user = cur.fetchall()
+
+        id1 = 0 
+        id1 = user[0][0]
+        print(id1)
+        return id1
+     
+    except Exception as es:
+        print(f"due to {str(es)}")
+    
+
+# convert set to list
+
+def set_to_name_list(set1):
+    ll = []
+    try:
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        for i in set1:
+            sql = "SELECT username FROM users WHERE id = %s"
+            
+            mytuple = (
+                i
+            )
+            cur.execute(sql, mytuple)
+
+            user = cur.fetchall()
+            if cur.rowcount >=1 :
+                # print(user[0])
+                
+                ll.append(user[0][0])
+            else :
+                break
+            
+        print(ll)
+        
+        return ll  
+     
+    except Exception as es:
+        print(f"due to {str(es)}")
+        
+
+
+def not_connected(user_one_id):
+    
+    try: 
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        
+        # all possible connection of user logged in here it is user_one_id
+        sql = "SELECT * FROM relationship WHERE (user_one_id = %s OR user_two_id = %s )" 
+        mytuple = (
+                user_one_id, user_one_id
+            )
+        cur.execute(sql,mytuple)
+        
+        # print(cur.rowcount)
+        
+        records = cur.fetchall()
+        
+        connected = set()
+        
+        for row in records:
+            connected.add(row[0])
+            connected.add(row[1])
+            # print(row)
+            
+        # print(connected)
+        
+        # print("sep \n")
+
+        # list of all users
+        cur.execute("SELECT * FROM users")
+        records2 = cur.fetchall()
+        all_users = set()
+        for row1 in records2:
+            all_users.add(row1[4])
+            # print(row1)
+            
+            
+        not_connected_set= set()
+        not_connected_set = all_users - connected  # total list - connected ones
+        print(not_connected_set)
+        # return list 
+        ll = set_to_name_list(not_connected_set)
+        return ll
+            
+    
+    except Exception as es:
+        print(f"due to {str(es)}")
+        
+
+
+def fr_sent_na(user_one_id):
+    
+    
+    
+    try: 
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        sql = "SELECT * FROM relationship WHERE user_one_id = %s AND status = %s"
+            
+        mytuple = (
+                user_one_id, 0 
+            )
+
+        cur.execute(sql,mytuple)
+    
+        
+        # print(cur.rowcount)
+        
+        records = cur.fetchall()
+        
+        mylist = set()
+        
+        for row in records:
+            mylist.add(row[1])
+            
+            # print(row)
+            
+        print(mylist)
+        # return list 
+        ll = set_to_name_list(mylist)
+        return ll
+        
+        # cur.rowcount
+        
+    except Exception as es:
+        print(f"due to {str(es)}")
+        
+
+def pending_requested_list(user_one_id):
+    
+    
+    
+    try: 
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        sql = "SELECT * FROM relationship WHERE user_two_id = %s AND status = %s"
+            
+        mytuple = (
+                user_one_id, 0
+            )
+
+        cur.execute(sql,mytuple)
+    
+        
+        # print(cur.rowcount)
+        
+        records = cur.fetchall()
+        
+        mylist = set()
+        
+        for row in records:
+            mylist.add(row[0])
+            
+            # print(row)
+            
+        print(mylist)
+        # return list 
+        ll = set_to_name_list(mylist)
+        return ll
+        
+        # cur.rowcount
+        
+    except Exception as es:
+        print(f"due to {str(es)}")
+        
+def friend_list(user_one_id):
+    
+    try: 
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        sql = "SELECT * FROM relationship WHERE (user_one_id = %s OR user_two_id = %s ) AND status = %s"
+            
+        mytuple = (
+                user_one_id, user_one_id, 1
+            )
+
+        cur.execute(sql,mytuple)
+    
+        
+        # print(cur.rowcount)
+        
+        records = cur.fetchall()
+        
+        mylist = set()
+        one = set()
+        one.add(user_one_id)
+        
+        for row in records:
+            mylist.add(row[0])
+            mylist.add(row[1])
+            
+            # print(row)
+        mylist = mylist - one
+        print(mylist)
+        # return list 
+        ll = set_to_name_list(mylist)
+        return ll
+        
+        # cur.rowcount
+        
+    except Exception as es:
+        print(f"due to {str(es)}")
+        
