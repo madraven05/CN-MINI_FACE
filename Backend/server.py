@@ -180,6 +180,7 @@ class ClientThread(Thread):
             # Necessary functions for sending and accepting req/response to be added here
             request = client.recv(1024)
             # print(request)
+            # print(request)
             if request:
                 # print("object in bytes: ", request)
                 client_req = pickle.loads(request, encoding='utf-8')
@@ -434,6 +435,58 @@ class ClientThread(Thread):
                     server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
                         # print(server_reponse)
                     client1.send(server_reponse)
+                    
+                elif client_req['command'] == 'SEND_REQ':
+                
+                    id1 = user_to_id(self.user_n )
+                    # print(self.user_n )
+                    # print("check")
+                    user2 =  client_req['body'] 
+                    print(user2)
+                    id2 = user_to_id(user2 )
+                    print(id2)
+                    
+                    
+                    # print(id1)
+                    
+                    # print(users)
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    
+                    if send_req(id1, id2):
+                    
+                        server_response_msg["status_line"]["status_code"] = SUCCESS
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client!
+                    
+                elif client_req['command'] == 'ACCEPT_REQ':
+                    
+                    id1 = user_to_id(self.user_n )
+                    # print(self.user_n )
+                    # print("check")
+                    user2 =  client_req['body'] 
+                    print(user2)
+                    id2 = user_to_id(user2 )
+                    print(id2)
+                    
+                    
+                    # print(id1)
+                    
+                    # print(users)
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    
+                    if accept_req(id1, id2):
+                    
+                        server_response_msg["status_line"]["status_code"] = SUCCESS
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client!
                     
                     
 

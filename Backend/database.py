@@ -472,3 +472,47 @@ def friend_list(user_one_id):
     except Exception as es:
         print(f"due to {str(es)}")
         
+        
+def send_req(user_one_id , user_two_id):
+        
+    try: 
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        cur.execute("insert into relationship (user_one_id,user_two_id, status , action_user) values(%s,%s,%s,%s)", 
+            ( 
+                user_one_id,user_two_id, 0 , user_one_id
+                
+            )) 
+        con.commit()
+        con.close()
+        return 1
+    
+    except Exception as es:
+        print(f"due to {str(es)}")
+        return 0
+    
+def accept_req(user_one_id , user_two_id):
+    
+    try: 
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        
+        sql = "UPDATE relationship SET status = %s ,  action_user = %s WHERE user_one_id = %s AND user_two_id = %s"
+        
+        mytuple = (
+            1,
+            user_one_id ,
+            user_two_id,
+            user_one_id 
+        )
+
+        cur.execute(sql,mytuple)
+        con.commit()
+        con.close()
+        return 1
+        
+    except Exception as es:
+        print(f"due to {str(es)}")
+        return 0
+        
+        

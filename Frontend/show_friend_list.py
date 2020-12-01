@@ -101,7 +101,7 @@ class Show_friend_list:
             y = 50
             for f in friends:
                 username = Label(self.Frame_friend,text='@' + f,font=("Impact",8),fg="#d77337",bg="white").place(x=150,y=y)
-                add_friend=Button(self.Frame_friend,cursor="hand2",text="Message",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
+                add_friend=Button(self.Frame_friend,cursor="hand2",text="Add Friend",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = partial(self.add_friend,f)).place(x=200,y=y)
             
                 y += 100
         
@@ -124,7 +124,7 @@ class Show_friend_list:
             y = 250
             for f in friends:
                 username = Label(self.Frame_friend,text='@' + f,font=("Impact",8),fg="#d77337",bg="white").place(x=10,y=y)
-                # add_friend=Button(self.Frame_friend,cursor="hand2",text="Add Friend",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
+                accept_friend=Button(self.Frame_friend,cursor="hand2",text="Accept Req",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = partial(self.accept_req,f)).place(x=60,y=y)
                 y += 30
         
     def pending_by_them(self):
@@ -149,8 +149,52 @@ class Show_friend_list:
                 # add_friend=Button(self.Frame_friend,cursor="hand2",text="Add Friend",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
                 y += 100
     
-    def add_friend(self):
-        pass
+    def add_friend(self , id2):
+        print('add f')
+        client_req_msg['command'] = "SEND_REQ"
+        client_req_msg['body']  = id2  
+        print(id2)
+        client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
+        self.client_socket.send(client_req)
+
+        # Server Response -> [[post], [post], ....]
+        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
+
+        
+        if  server_response['status_line']['status_code'] == SUCCESS:
+            print("Request Sent")
+            messagebox.showerror("Success","Request sent",parent=self.root) 
+ 
+            
+        else:
+            print("Request Not Sent")
+            
+    def accept_req(self, id2):
+        # print('add f')
+        client_req_msg['command'] = "ACCEPT_REQ"
+        client_req_msg['body']  = id2  
+        print(id2)
+        client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
+        self.client_socket.send(client_req)
+
+        # Server Response -> [[post], [post], ....]
+        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
+
+        
+        if  server_response['status_line']['status_code'] == SUCCESS:
+            print("Request Accepted")
+            messagebox.showerror("Success","Request accepted",parent=self.root) 
+ 
+            
+        else:
+            print("Request Not Accepted")
+        
+            
+            
+        
+        
     
     def chat_friend(self,user):
         master5 = Tk()
