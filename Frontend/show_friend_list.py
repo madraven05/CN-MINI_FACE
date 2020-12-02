@@ -64,9 +64,14 @@ class Show_friend_list:
             
             y = 60
             for f in friends:
-                username = Label(self.Frame_friend,text='@' + f,font=("Impact",8),fg="#d77337",bg="white").place(x=10,y=y)
-                message=Button(self.Frame_friend,cursor="hand2",text="Message",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command =partial(self.chat_friend,f)).place(x=60,y=y)
-                y += 100
+                username = Label(self.Frame_friend,text='@' + f ,font=("Impact",8),fg="#d77337",bg="white").place(x=10,y=y)
+                if friends[f] ==1:
+                    message=Button(self.Frame_friend,cursor="hand2",text="Message",bg="green",fg="white",bd=0,font=("Times New Roman",10), command =partial(self.chat_friend,f)).place(x=60,y=y)
+                else:
+                    message=Button(self.Frame_friend,cursor="hand2",text="Message",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command =partial(self.chat_friend,f)).place(x=60,y=y)
+            
+                    
+                y += 40
             
         
             

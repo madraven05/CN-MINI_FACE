@@ -53,7 +53,7 @@ class Chat:
 
         messages_frame = tk.Frame(self.root)
         messages_frame.place(x=10,y=10,height=200,width=200)
-        self.my_msg = tk.StringVar()  # For the messages to be sent.
+        # self.my_msg = tk.StringVar()  # For the messages to be sent.
         # my_msg.set("Type your messages here.")
         scrollbar = tk.Scrollbar(messages_frame)  # To navigate through past messages.
         # Following will contain the messages.
@@ -63,10 +63,12 @@ class Chat:
         self.msg_list.pack()
         messages_frame.pack()
 
-        entry_field = tk.Entry(self.root, textvariable=self.my_msg)
+        self.my_msg=Entry(messages_frame,font=("Times New Roman",15),bg="white")
+
+        # entry_field = tk.Entry(self.root, textvariable=self.my_msg)
         # entry_field.place(x=10,y=170,width=50,height=35) 
-        entry_field.bind("<Return>", self.send_message)
-        entry_field.pack()
+        # entry_field.bind("<Return>", self.send_message)
+        self.my_msg.pack()
         send_button = tk.Button(self.root, text="Send", command=self.send_message)
         send_button.pack()
 

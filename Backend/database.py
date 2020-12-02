@@ -126,6 +126,30 @@ def user_login(username,password):
         return 0
 
 
+
+def online(username):
+    try: 
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        
+        sql = "UPDATE users SET online = %s  WHERE username = %s "
+        
+        mytuple = (
+            1,
+            username
+        )
+
+        cur.execute(sql,mytuple)
+        con.commit()
+        con.close()
+        return 1
+        
+    except Exception as es:
+        print(f"due to {str(es)}")
+        return 0
+
+
+
 '''
 Function to return the username list
 '''
@@ -312,6 +336,42 @@ def set_to_name_list(set1):
         print(f"due to {str(es)}")
         
 
+def namelist_to_dict(list1):
+    dict = {}
+    try:
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        for i in list1:
+            sql = "SELECT * FROM users WHERE username = %s"
+            
+            mytuple = (
+                i
+            )
+            cur.execute(sql, mytuple)
+
+            user = cur.fetchall()
+            if cur.rowcount >=1 :
+                # print(user[0])
+                dict.update({user[0][2]:user[0][5]})
+                
+            else :
+                break
+            
+        print(dict)
+        
+        return dict 
+     
+    except Exception as es:
+        print(f"due to {str(es)}")
+        
+
+
+
+
+
+
+
+
 
 def not_connected(user_one_id):
     
@@ -469,7 +529,9 @@ def friend_list(user_one_id):
         print(mylist)
         # return list 
         ll = set_to_name_list(mylist)
-        return ll
+        dict1 = namelist_to_dict(ll)
+        print(dict1)
+        return dict1
         
         # cur.rowcount
         
@@ -508,6 +570,27 @@ def accept_req(user_one_id , user_two_id):
             user_one_id ,
             user_two_id,
             user_one_id 
+        )
+
+        cur.execute(sql,mytuple)
+        con.commit()
+        con.close()
+        return 1
+        
+    except Exception as es:
+        print(f"due to {str(es)}")
+        return 0
+    
+def logout(username):
+    try: 
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        
+        sql = "UPDATE users SET online = %s  WHERE username = %s "
+        
+        mytuple = (
+            0,
+            username
         )
 
         cur.execute(sql,mytuple)

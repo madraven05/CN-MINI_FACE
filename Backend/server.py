@@ -204,6 +204,9 @@ class ClientThread(Thread):
                         print("User Login Successful!")
                         self.user_n = username
                         
+                        # online user
+                        online(username)
+                        
                         # Send Server Response
                         server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
                         server_response_msg["status_line"]["status_code"] = SUCCESS # Success status code set!
@@ -224,7 +227,32 @@ class ClientThread(Thread):
                         client.send(server_reponse) # Send to client!
 
                         print("User Login Failed! :(")
+                        
                 
+                ##############################################
+                # If command is LOGOUT
+                ##############################################
+                
+                
+                        
+                
+                elif client_req['command'] == 'LOG_OUT':
+                        
+                    # print(client_req_body)
+                   
+                    
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    server_response_msg['data'] = ""
+
+                    if  logout(self.user_n) :
+                        server_response_msg["status_line"]["status_code"] = SUCCESS # Success status code set!
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE # Failure status code set!
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client! 
+
                 
                 
                 ##############################################

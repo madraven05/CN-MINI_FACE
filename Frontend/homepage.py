@@ -48,7 +48,7 @@ class HomePage:
         self.txt_search.place(x=5,y=10,width=200,height=35)
         search_btn = Button(self.Frame_users,command=self.search_users,cursor="hand2",text="Search Name",bg="gray",fg="white",font=("Times New Roman",15)).place(x=5,y=60) 
         search_all_btn = Button(self.Frame_users,command=self.search_all_users,cursor="hand2",text="All Users",bg="gray",fg="white",font=("Times New Roman",15)).place(x=5,y=200) 
-        Logout=Button(self.Frame_users,cursor="hand2",text="LOGOUT",bg="white",fg="#d77337",bd=0,font=("Times New Roman",12), command = self.root.destroy).place(x=100,y=450)
+        Logout=Button(self.Frame_users,cursor="hand2",text="LOGOUT",bg="white",fg="#d77337",bd=0,font=("Times New Roman",12), command = self.logout).place(x=100,y=450)
       
         ###############################################################################################################################################
 
@@ -131,7 +131,7 @@ class HomePage:
         # print("Username: ", self.user)
 
         app4 = Show_friend_list(master4, self.client_socket, self.username)
-        self.root.destroy()
+        # self.root.destroy()
         master4.mainloop()    
 
 
@@ -201,7 +201,31 @@ class HomePage:
             print("Fetching user failed!");
             messagebox.showerror("Error","Incorrect username!",parent=self.root)
     
+    '''
+    Log out
+    '''
+    def logout(self):
+        
+         # Server request - log out
+        client_req_msg['command'] = "LOG_OUT"
+        client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
+        self.client_socket.send(client_req)
 
+    
+        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
+        
+        if server_response['status_line']['status_code'] == SUCCESS:
+            print("log out")
+            self.root.destroy()
+         
+            
+        else:
+            print("log out failed!");
+            messagebox.showerror("Error","logout failed!",parent=self.root)
+    
+        
+    
 
 
 
