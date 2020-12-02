@@ -8,7 +8,7 @@ from tkinter import font
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
-from Backend.server import client_req_msg, SUCCESS, FAILURE
+from Backend.server import client_req_msg, SUCCESS, FAILURE, BUFF_SIZE
 #from Frontend.homepage import HomePage
 import pickle
 import datetime
@@ -53,7 +53,7 @@ class Show_friend_list:
         self.client_socket.send(client_req)
 
         # Server Response -> [[post], [post], ....]
-        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
         server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
 
         if server_response['status_line']['status_code'] == SUCCESS:
@@ -93,7 +93,7 @@ class Show_friend_list:
         self.client_socket.send(client_req)
 
         # Server Response -> [[post], [post], ....]
-        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
         server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
 
         
@@ -116,7 +116,7 @@ class Show_friend_list:
         self.client_socket.send(client_req)
 
         # Server Response -> [[post], [post], ....]
-        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
         server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
 
         
@@ -138,7 +138,7 @@ class Show_friend_list:
         self.client_socket.send(client_req)
 
         # Server Response -> [[post], [post], ....]
-        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
         server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
 
         
@@ -163,7 +163,7 @@ class Show_friend_list:
         self.client_socket.send(client_req)
 
         # Server Response -> [[post], [post], ....]
-        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
         server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
 
         
@@ -184,7 +184,7 @@ class Show_friend_list:
         self.client_socket.send(client_req)
 
         # Server Response -> [[post], [post], ....]
-        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
         server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
 
         

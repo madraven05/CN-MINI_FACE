@@ -7,11 +7,13 @@ from tkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
-from Backend.server import client_req_msg, SUCCESS, FAILURE
+from Backend.server import client_req_msg, SUCCESS, FAILURE, BUFF_SIZE
 import pickle
 import datetime
+from functools import partial
 # from Frontend.writepostpage import WritePostPage 
 from Frontend.show_friend_list import Show_friend_list
+from Frontend.friendwall import UserWall
 
 class HomePage:
     '''
@@ -61,11 +63,12 @@ class HomePage:
         Frame_posts.place(x=10,y=10,height=700,width=600)
 
         client_req_msg['command'] = "FETCH_POSTS"
+        client_req_msg['body'] = self.username
         client_req = pickle.dumps(client_req_msg) # convers the client req message to bytes
         self.client_socket.send(client_req)
 
         # Server Response -> [[post], [post], ....]
-        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
         server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
 
         if server_response['status_line']['status_code'] == SUCCESS:
@@ -100,12 +103,22 @@ class HomePage:
             # i += 1
 
         Post=Button(self.Frame_users,command=self.write_post_page,cursor="hand2",text="Write Post",bg="white",fg="#d77337",font=("Times New Roman",12)).place(x=100,y=400)
-        text1 = Label(Frame_posts,text= 'New Posts',font=("Times",20),fg="green",bg="white").place(x=10,y=60)
+        text1 = Label(Frame_posts,text= 'Your Posts',font=("Times",20),fg="green",bg="white").place(x=10,y=60)
 
         welcometext = Label(Frame_posts,text= "Welcome @" + self.username,font=("Times",22),fg="blue",bg="white").place(x=10,y=10)
         ###############################################################################################################################################
         # friend list button
         My_Friends=Button(Frame_posts,command=self.friends_page,cursor="hand2",text="FRIENDS LIST",bg="white",fg="#d77337",font=("Times New Roman",15)).place(x=400,y=10)
+
+
+
+    def visit_user(self, user2):
+        master3 = Tk()
+        # print("Username: ", self.user)
+
+        app3 = UserWall(master3, self.client_socket, self.username, user2)
+        # self.root.destroy()
+        master3.mainloop()    
 
 
     '''
@@ -145,7 +158,7 @@ class HomePage:
         self.client_socket.send(client_req)
 
         # Server Response -> [username, username, ....]
-        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
         server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
         
         if server_response['status_line']['status_code'] == SUCCESS:
@@ -159,7 +172,7 @@ class HomePage:
             for user in users:
                 if user != self.username:
                     username=Label(self.Frame_users,text=user,font=("Impact",10),fg="white",bg="gray").place(x=10,y=y)
-                    # add_friend=Button(self.Frame_users,cursor="hand2",text="Add Friend",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = self.add_friend).place(x=60,y=y)
+                    visit_btn=Button(self.Frame_users,cursor="hand2",text="Visit",bg="gray",fg="white",bd=0,font=("Times New Roman",10), command = partial(self.visit_user,user)).place(x=60,y=y)
                     y += 30
             
         else:
@@ -182,7 +195,7 @@ class HomePage:
         self.client_socket.send(client_req)
 
         # Server Response -> user or user not found!
-        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
         server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
         
         if server_response['status_line']['status_code'] == SUCCESS:
@@ -212,7 +225,7 @@ class HomePage:
         self.client_socket.send(client_req)
 
     
-        server_response = self.client_socket.recv(1024) # receive from server
+        server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
         server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
         
         if server_response['status_line']['status_code'] == SUCCESS:
@@ -305,7 +318,7 @@ class WritePostPage:
             self.client_socket.send(client_req)
             
             # Receive Server Response and show success message!
-            server_response = self.client_socket.recv(1024) # receive from server
+            server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
             server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
         
             if server_response['status_line']['status_code'] == SUCCESS:

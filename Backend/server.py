@@ -47,10 +47,11 @@ from threading import Thread
 # from Backend.database import user_login, user_register, publish_post, fetch_all_users, fetch_user,fetch_posts
 from Backend.database import * 
 
-
+BUFF_SIZE = 32000
 ####### Status Codes ########
 SUCCESS = 200
 FAILURE = 404
+CHAT_FETCHED = 100
 ############################
 clients={}
 
@@ -338,7 +339,28 @@ class ClientThread(Thread):
                 ##############################################
                 elif client_req['command'] == 'FETCH_POSTS':
                     
-                    posts = fetch_posts()
+                    username = client_req['body']
+                    posts = fetch_posts(username)
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+
+                    if posts:
+                        server_response_msg['data'] = posts
+                        server_response_msg["status_line"]["status_code"] = SUCCESS
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE
+
+                    server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                    # print(server_reponse)
+                    client.send(server_reponse) # Send to client! 
+
+
+                ##############################################
+                # If command is FETCH_USER_POSTS
+                ##############################################
+                elif client_req['command'] == 'FETCH_USER_POSTS':
+                    
+                    user2 = client_req['body']
+                    posts = fetch_user_posts(user2)
                     server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
 
                     if posts:
@@ -450,25 +472,59 @@ class ClientThread(Thread):
                     
                     
                 ##############################################
-                # If command is CHAT
+                # If command is SEND_CHAT
                 ##############################################
                 elif client_req['command']=='SEND_CHAT':
                     
                     username, message, send_to, published_at = self.get_message_details(client_req_body)
-                    # print(username, message,send_to,published_at)
-
-
-                    client1=clients[send_to] ##client1 is client socket of the user to whom we wants to message.
-                    finalmessage=username+': '+message
-                   
 
                     server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
-                    server_response_msg["status_line"]["status_code"] = SUCCESS # Success status code set!
-                    server_response_msg['data'] = finalmessage
+                    
+                    # Read_bool set to 0 if the client is not active/online
+                    if send_to in clients.keys():
+                        read_bool = 1
+                    else:
+                        read_bool = 0
 
+                    # store message in the database
+                    if store_message(username, send_to, message, read_bool, published_at):
+                        server_response_msg["status_line"]["status_code"] = SUCCESS # Success status code set!
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE # Failure status code set!
+
+                    # If client is active/online, send them the message!
+                    if send_to in clients.keys():
+                        client1=clients[send_to] ##client1 is client socket of the user to whom we wants to message.
+                        finalmessage=username+': '+message
+    
+                        server_response_msg['data'] = finalmessage
+
+                        server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
+                            # print(server_reponse)
+                        client1.send(server_reponse)
+
+
+                ##############################################
+                # If command is FETCH_CHAT
+                ##############################################
+                elif client_req['command'] == 'FETCH_CHAT':
+                    data = client_req['data'].split(',')
+
+                    server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
+                    
+                    
+                    # Username and send_to fetch
+                    username = data[0]
+                    send_to = data[1]
+                    message_list = fetch_chat(username, send_to)
+                    if message_list:
+                        server_response_msg["status_line"]["status_code"] = CHAT_FETCHED # Success status code set!
+                        server_response_msg['data'] = message_list
+                    else:
+                        server_response_msg["status_line"]["status_code"] = FAILURE # Failure status code set!
+                        
                     server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
-                        # print(server_reponse)
-                    client1.send(server_reponse)
+                    self.client.send(server_reponse)
 
 
 

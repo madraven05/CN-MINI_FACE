@@ -2,7 +2,7 @@ from tkinter import *
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
-from Backend.server import client_req_msg, SUCCESS, FAILURE
+from Backend.server import client_req_msg, SUCCESS, FAILURE, BUFF_SIZE
 # from Frontend.writepostpage import WritePostPage
 from Frontend.homepage import HomePage
 import pickle
@@ -54,7 +54,7 @@ class LoginPage:
             self.client_socket.send(client_req) 
             
             # Receive Server Response and show success message!
-            server_response = self.client_socket.recv(1024) # receive from server
+            server_response = self.client_socket.recv(BUFF_SIZE) # receive from server
             server_response = pickle.loads(server_response, encoding='utf-8') # convert to dictionary
 
             if server_response['status_line']['status_code'] == SUCCESS:

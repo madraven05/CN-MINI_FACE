@@ -1,6 +1,6 @@
 import pymysql
 from cryptography.fernet import Fernet
-
+import datetime
 
 
 
@@ -203,7 +203,7 @@ def publish_post(author, title, content, published_at, ownership):
         print("Post added to database!")
         return 1
     
-    except Exception as es:
+    except Exception as es:# store message in the database
         print(f"due to {str(es)}")
         print("Post publishing failed! :(")
         return 0
@@ -212,24 +212,22 @@ def publish_post(author, title, content, published_at, ownership):
 '''
 Function to fetch posts
 '''
-def fetch_posts():
+def fetch_posts(username):
     print("Fetching posts...")
     
     try:
         con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
         cur = con.cursor()
 
-        sql = "SELECT * FROM posts"
-        cur.execute(sql)
+        sql = "SELECT * FROM posts WHERE author = %s"
+        mytuple = (username)
+        cur.execute(sql, mytuple)
         
         posts = cur.fetchall()
         # print(posts)
 
         post_list = []
-        # (('neel', 'password', 'encryption', datetime.datetime(2020, 11, 25, 18, 27, 25)), 
-        # ('neel ', 'done', 'done', datetime.datetime(2020, 11, 25, 18, 37, 24)), 
-        # ('sagar', 'mynewpost', 'uploaded', datetime.datetime(2020, 11, 25, 18, 40, 46)), 
-        # ('sagar', 'ghbjnkm', 'cgvhbjnk', datetime.datetime(2020, 11, 25, 19, 23, 47)))
+       
 
         for post in posts:
             username = post[0]
@@ -239,6 +237,46 @@ def fetch_posts():
             ownership = post[4]
             
             post_list.append([username, title, content, datetime, ownership])
+
+        print("Fetching Done!")
+
+        return post_list
+    except Exception as es:
+        print(f"due to {str(es)}")
+        print("Post fetching failed! :(")
+        return 0
+
+
+'''
+Function to fetch user posts
+'''
+def fetch_user_posts(username):
+    print("Fetching posts...")
+    
+    try:
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+
+        sql = "SELECT * FROM posts WHERE author = %s"
+        mytuple = (username)
+        cur.execute(sql, mytuple)
+        
+        posts = cur.fetchall()
+        # print(posts)
+
+        post_list = []
+       
+
+        for post in posts:
+            username = post[0]
+            title = post[1]
+            content = post[2]
+            datetime = str(post[3])
+            ownership = post[4]
+            if ownership == 0:
+                post_list.append([username, title, content, datetime, ownership])
+
+        print("Fetching Done!")
 
         return post_list
     except Exception as es:
@@ -602,4 +640,77 @@ def logout(username):
         print(f"due to {str(es)}")
         return 0
         
+
+'''
+Function to store messages
+'''
+def store_message(username, send_to, message, read_bool, published_at):
+    print("Storing Message")
+
+    try:   #database connectivity
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        cur.execute("insert into messages (sender, receiver, message, timestamp, read_bool) values(%s,%s,%s,%s,%s)", 
+            ( 
+                username, 
+                send_to, 
+                message,
+                published_at,
+                read_bool
+            )) 
+        con.commit()
+        con.close()
+
+        print("Message added to database!")
+        return 1
+    
+    except Exception as es:# store message in the database
+        print(f"due to {str(es)}")
+        print("Storing Message Failed! :(")
+        return 0
+
+
+'''
+Function to get all the messages
+'''
+def fetch_chat(username, send_to):
+    print("Fetching Chat with user", send_to)
+
+    try:
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+
+        sql = "SELECT * FROM messages WHERE (sender = %s AND receiver = %s) OR (sender = %s AND receiver = %s)"
+        mytuple = (
+            username,
+            send_to,
+            send_to,
+            username
+        )
+        cur.execute(sql, mytuple)
         
+        messages = cur.fetchall()
+        # print(messages)
+
+        message_list = []
+       
+
+        for message in messages:
+            sender = message[0]
+            message = message[2]
+            read_bool = 1
+            message = sender + ": " + message
+            message_list.append([message, read_bool])
+
+        print(message_list)
+
+        print("Fetching Done!")
+
+        return message_list
+    except Exception as es:
+        print(f"due to {str(es)}")
+        print("Message fetching failed! :(")
+        return 0
+
+    
+    
