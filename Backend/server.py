@@ -228,11 +228,7 @@ class ClientThread(Thread):
                 
                 ##############################################
                 # If command is LOGOUT
-                ##############################################
-                
-                
-                        
-                
+                ##############################################        
                 elif client_req['command'] == 'LOG_OUT':
                         
                     # print(client_req_body)
@@ -287,9 +283,7 @@ class ClientThread(Thread):
                     server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
                     # print(server_reponse)
                     client.send(server_reponse) # Send to client! 
-
-                
-                
+      
                 ##############################################
                 # If command is FETCH_USERS
                 ##############################################
@@ -307,7 +301,6 @@ class ClientThread(Thread):
                     server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
                     # print(server_reponse)
                     client.send(server_reponse) # Send to client! 
-
 
                 ##############################################
                 # If command is FETCH_USER
@@ -442,7 +435,6 @@ class ClientThread(Thread):
                     server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
                     # print(server_reponse)
                     client.send(server_reponse) # Send to client!
-                    
                     
 
                 elif client_req['command'] == 'FETCH_F_4':
