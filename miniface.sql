@@ -2,8 +2,8 @@
 -- version 5.0.3
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Dec 02, 2020 at 08:56 AM
+-- Host: localhost
+-- Generation Time: Dec 02, 2020 at 08:19 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.34
 
@@ -24,6 +24,29 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `sender` varchar(50) DEFAULT NULL COMMENT 'sender username',
+  `receiver` varchar(50) DEFAULT NULL COMMENT 'receiver username',
+  `message` varchar(100) DEFAULT NULL COMMENT 'message',
+  `timestamp` datetime NOT NULL DEFAULT current_timestamp() COMMENT 'timestamp',
+  `read_bool` int(1) NOT NULL DEFAULT 0 COMMENT 'Message read or not'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`sender`, `receiver`, `message`, `timestamp`, `read_bool`) VALUES
+('pranshu', 'sagar', 'hello', '2020-12-02 15:04:48', 1),
+('pranshu', 'sagar', 'hello', '2020-12-02 16:10:25', 0),
+('pranshu', 'neel', 'hichiki pupu', '2020-12-02 21:45:24', 0);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `posts`
 --
 
@@ -40,16 +63,10 @@ CREATE TABLE `posts` (
 --
 
 INSERT INTO `posts` (`author`, `title`, `content`, `published_at`, `ownership`) VALUES
-('neel', 'password', 'encryption', '2020-11-25 18:27:25', 0),
-('neel ', 'done', 'done', '2020-11-25 18:37:24', 0),
-('sagar', 'mynewpost', 'uploaded', '2020-11-25 18:40:46', 0),
-('sagar', 'ghbjnkm', 'cgvhbjnk', '2020-11-25 19:23:47', 0),
-('pranshu', 'New Post', 'Hello World!', '2020-11-26 01:39:36', 0),
-('pranshu', 'Private', 'Post', '2020-11-27 01:26:03', 0),
-('pranshu', 'pvt', 'post', '2020-11-27 01:27:08', 0),
-('pranshu', 'strictly', 'private', '2020-11-27 01:28:47', 0),
-('pranshu', 'pranshu', 'kumar', '2020-11-27 01:30:27', 0),
-('pranshu', 'akldaksld', 'ansdkjanad', '2020-11-27 01:38:37', 1);
+('pranshu', 'Hey ', 'There', '2020-12-02 16:27:15', 0),
+('neel', 'Private', 'This is a private Post', '2020-12-02 16:55:19', 1),
+('sagar', 'Public', 'This is a public post', '2020-12-02 21:29:34', 0),
+('sagar', 'Strictly Private', 'This is a strictly private post!', '2020-12-02 21:29:56', 2);
 
 -- --------------------------------------------------------
 
@@ -97,14 +114,21 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`fname`, `lname`, `username`, `encrypt_pw`, `id`, `online`) VALUES
-('s', 'b', 'sagar', 'gAAAAABfvkTMnXAS2mwipJ-2vp8OG-cnb4Q6FXvnDREMBqlPp1hqUJhUUmJQSJhw4AN8gRczaj3dD-TCfkwK_aDT02tnAMJrrg==', 1, 0),
-('p', 'k', 'pranshu', 'gAAAAABfvkTabcJilsTWXnz9cBZLOw93iMJhYzC7FoGK3bypm5F1Q6YUYgj4nlveMZ3aM-AXYU8LvEIrXm4SmpSUonMjCVnPrw==', 2, 0),
-('n', 'p', 'neel', 'gAAAAABfvkTold5hqT9Uz1FkCsPDkumKMaKJRCe7v0fJa-z-GV7hl9L19ZntUH5HcigYRqjUTJDFAljRUqeVzXuLNKTxnFDifQ==', 3, 0),
+('s', 'b', 'sagar', 'gAAAAABfvkTMnXAS2mwipJ-2vp8OG-cnb4Q6FXvnDREMBqlPp1hqUJhUUmJQSJhw4AN8gRczaj3dD-TCfkwK_aDT02tnAMJrrg==', 1, 1),
+('p', 'k', 'pranshu', 'gAAAAABfvkTabcJilsTWXnz9cBZLOw93iMJhYzC7FoGK3bypm5F1Q6YUYgj4nlveMZ3aM-AXYU8LvEIrXm4SmpSUonMjCVnPrw==', 2, 1),
+('n', 'p', 'neel', 'gAAAAABfvkTold5hqT9Uz1FkCsPDkumKMaKJRCe7v0fJa-z-GV7hl9L19ZntUH5HcigYRqjUTJDFAljRUqeVzXuLNKTxnFDifQ==', 3, 1),
 ('abcd', 'fgvbh', 'vv', 'gAAAAABfvqIOD-3qasrMXm5b-P-83u6rZ1Nq2rf3pMIUXWuTlxqBQzN1lNjIg1ME2VqxIh8_gwk7bVf2LgmYdjvOS0PIHSxwKQ==', 4, 0);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD KEY `user_sender` (`sender`),
+  ADD KEY `user_receiver` (`receiver`);
 
 --
 -- Indexes for table `posts`
@@ -132,6 +156,13 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `messages`
+--
+ALTER TABLE `messages`
+  ADD CONSTRAINT `user_receiver` FOREIGN KEY (`receiver`) REFERENCES `users` (`username`) ON DELETE CASCADE,
+  ADD CONSTRAINT `user_sender` FOREIGN KEY (`sender`) REFERENCES `users` (`username`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `posts`
