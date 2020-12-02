@@ -61,6 +61,7 @@ clients={}
 client_req_msg = {
     "command": "",
     "header_lines": {
+        "content_length":0,
         "server_id": 12345,
         "accept_encoding": 'utf-8',
     },
@@ -77,11 +78,6 @@ server_response_msg = {
         "date": "",
         "accept_ranges": bytes,
         "content_length": 0,
-        "keep_alive": {
-            "timeout": 10,
-            "max": 100
-        },
-        "connection": 'keep-alive'
     },
     "data": ""
 }
