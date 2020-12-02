@@ -1,3 +1,5 @@
-certifi==2020.6.20
-SQLAlchemy @ file:///tmp/build/80754af9/sqlalchemy_1603397987316/work
-CN-MINI_FACE
+cffi==1.14.4
+cryptography==3.2.1
+pycparser==2.20
+PyMySQL==0.10.1
+six==1.15.0
