@@ -42,12 +42,13 @@ def user_register(fname, lname, username, user_password):
         cur = con.cursor()
         
         # five entries in database 
-        cur.execute("insert into users (fname,lname,username,encrypt_pw) values(%s,%s,%s,%s,%s)", 
+        cur.execute("insert into users (fname,lname,username,encrypt_pw, online) values(%s,%s,%s,%s,%s)", 
             ( 
                 fname, 
                 lname, 
                 username,
-                encrypt_pw
+                encrypt_pw,
+                0
                 
             )) 
     
