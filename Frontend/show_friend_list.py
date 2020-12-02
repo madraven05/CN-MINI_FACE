@@ -26,7 +26,7 @@ class Show_friend_list:
 
         #Register
         self.Frame_friend=Frame(self.root,bg="white")
-        self.Frame_friend.place(x=105,y=150,height=340,width=700)
+        self.Frame_friend.place(x=0,y=0,height=607,width=910)
 
         # button 1
         My_friends=Button(self.Frame_friend, command = self.myfriend ,cursor="hand2",text="My Friends",bg="white",fg="#d77337",font=("Times New Roman",15)).place(x=10,y=10)
@@ -201,6 +201,8 @@ class Show_friend_list:
         print("Username: ", user)
 
         app3 = Chat(master5, self.client_socket, self.username,user)
+
+        # self.root.destroy()
         
         master5.mainloop()
     

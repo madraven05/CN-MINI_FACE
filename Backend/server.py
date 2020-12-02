@@ -46,8 +46,12 @@ import datetime
 from threading import Thread
 # from Backend.database import user_login, user_register, publish_post, fetch_all_users, fetch_user,fetch_posts
 from Backend.database import * 
+
+
+####### Status Codes ########
 SUCCESS = 200
 FAILURE = 404
+############################
 clients={}
 
 #print_lock = threading.Lock()
@@ -423,9 +427,11 @@ class ClientThread(Thread):
                 elif client_req['command']=='SEND_CHAT':
                     
                     username, message, send_to, published_at = self.get_message_details(client_req_body)
-                    print(username, message,send_to,published_at)
-                    client1=clients[send_to]##client1 is client socket of the user to whom we wants to message.
-                    finalmessage=username+'-->'+message
+                    # print(username, message,send_to,published_at)
+
+
+                    client1=clients[send_to] ##client1 is client socket of the user to whom we wants to message.
+                    finalmessage=username+': '+message
                    
 
                     server_response_msg["header_lines"]['date'] = datetime.datetime.now() # Setting the date and time
@@ -435,7 +441,12 @@ class ClientThread(Thread):
                     server_reponse = pickle.dumps(server_response_msg) # Convert objects to bytes
                         # print(server_reponse)
                     client1.send(server_reponse)
-                    
+
+
+
+                ##############################################
+                # If command is SEND_REQ
+                ##############################################    
                 elif client_req['command'] == 'SEND_REQ':
                 
                     id1 = user_to_id(self.user_n )

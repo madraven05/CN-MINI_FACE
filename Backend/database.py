@@ -83,44 +83,47 @@ Function to check user in the database and login
 def user_login(username,password):
     
 
-    
-    con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
-    cur = con.cursor()
-    sql = "SELECT * FROM users WHERE username = %s"
-    
+    try:
         
-    mytuple = (username)
-
-    cur.execute(sql,mytuple)
-    
-    records = cur.fetchall()
-    
-    decrypt_pw = ""
-    
-    # check if username exist in data base
-    
-    if cur.rowcount >=1:
-        for row in records:
-            # print(row[4])
-            decrypt_pw = row[3]    # get encrypted password of corresponding username 
+        con = pymysql.connect(host = "localhost", user = "root", password ="", database = "miniface")
+        cur = con.cursor()
+        sql = "SELECT * FROM users WHERE username = %s"
+        
             
-        decrypt_pw = decrypt(decrypt_pw)     # decrypt that encrypted password
-        
+        mytuple = (username)
 
-        if decrypt_pw == password : # row already exist  now you can login
-            print(" Now you can login")
-            return 1
+        cur.execute(sql,mytuple)
         
-        else :        # row do not exist, cant login
-            print("Incorrect password")
+        records = cur.fetchall()
+        
+        decrypt_pw = ""
+        
+        # check if username exist in data base
+        
+        if cur.rowcount >=1:
+            for row in records:
+                # print(row[4])
+                decrypt_pw = row[3]    # get encrypted password of corresponding username 
+                
+            decrypt_pw = decrypt(decrypt_pw)     # decrypt that encrypted password
+            
+
+            if decrypt_pw == password : # row already exist  now you can login
+                print(" Now you can login")
+                return 1
+            
+            else :        # row do not exist, cant login
+                print("Incorrect password")
+                return 0
+            
+        else:
+            print(" User not found")
             return 0
         
-    else:
-        print(" User not found")
+        con.close()
+    except Exception as es:
+        print("Error: ", str(es))
         return 0
-    
-    con.close()
-    
 
 
 '''
@@ -209,8 +212,9 @@ def fetch_posts():
             title = post[1]
             content = post[2]
             datetime = str(post[3])
+            ownership = post[4]
             
-            post_list.append([username, title, content, datetime])
+            post_list.append([username, title, content, datetime, ownership])
 
         return post_list
     except Exception as es:

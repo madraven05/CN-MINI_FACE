@@ -3,7 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
 from Backend.server import client_req_msg, SUCCESS, FAILURE
-from Frontend.writepostpage import WritePostPage
+# from Frontend.writepostpage import WritePostPage
 from Frontend.homepage import HomePage
 import pickle
 import datetime
@@ -71,7 +71,7 @@ class LoginPage:
 
             else:
                 # Login Failed
-                messagebox.showinfo("Login Failed! :(",'Wrong Username or Password',parent=self.root)
+                messagebox.showinfo("Error",'Login Failed!',parent=self.root)
                 print("Login Failed! :(")
 
 
