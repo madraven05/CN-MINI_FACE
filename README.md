@@ -36,6 +36,18 @@ For this you'll require the MySQL server setup. For this you can install <a href
 
 Once this is done, you need to import the `miniface.sql` file in your database and you're done!
 
+##### Step 1
+After starting the MySQL server, go to localhost/phpmyadmin page and click on **new**
+<img src="media/database0.png">
+
+##### Step 2
+Give the name **'miniface'** to the database
+<img src=media/database1.png>
+
+##### Step 3
+Click on **'import'** and import the file `miniface.sql`
+<img src="media/database2.png">
+
 ### Setting up the main application
 For starting the server, 
 run `start_server.py` and for starting the main application, start `main.py`
