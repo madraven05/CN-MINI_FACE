@@ -20,18 +20,19 @@ Clone the repository and run the following commands in the terminal:
 $ conda create --name <env_name>
 $ conda activate <env_name>
 ```
+> You can create a new environment using `vitualenv` too
 ### Installing libraries from requirements.txt
 ```shell
 $ pip install -r requirements.txt
 ```
 
 ### Setting up the database
-For this you'll require the MySQL server setup. You can install <a href="https://www.apachefriends.org/download.html">xampp</a> and start a MySQL server in your local machine. 
+For this you'll require the MySQL server setup. You can install <a href="https://www.apachefriends.org/download.html" target="_blank">xampp</a> and start a MySQL server in your local machine. 
 
 Once this is done, you need to import the [miniface.sql](miniface.sql) file in your database and you're done!
 
 ##### Step 1
-After starting the MySQL server, go to localhost/phpmyadmin page and click on **new**
+After starting the MySQL server, go to `localhost/phpmyadmin page` and click on **new**
 <img src="media/database0.png">
 
 ##### Step 2
