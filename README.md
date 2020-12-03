@@ -26,9 +26,9 @@ $ pip install -r requirements.txt
 ```
 
 ### Setting up the database
-For this you'll require the MySQL server setup. For this you can install <a href="https://www.apachefriends.org/download.html">xampp</a> and start a MySQL server in your local machine. 
+For this you'll require the MySQL server setup. You can install <a href="https://www.apachefriends.org/download.html">xampp</a> and start a MySQL server in your local machine. 
 
-Once this is done, you need to import the `miniface.sql` file in your database and you're done!
+Once this is done, you need to import the [miniface.sql](miniface.sql) file in your database and you're done!
 
 ##### Step 1
 After starting the MySQL server, go to localhost/phpmyadmin page and click on **new**
@@ -39,9 +39,9 @@ Give the name **'miniface'** to the database
 <img src=media/database1.png>
 
 ##### Step 3
-Click on **'import'** and import the file `miniface.sql`
+Click on **'import'** and import the file [miniface.sql](miniface.sql)
 <img src="media/database2.png">
 
 ### Setting up the main application
 For starting the server, 
-run `start_server.py` and for starting the main application, start `main.py`
+run [start_server.py](start_server.py) and for starting the main application, start [main.py](main.py)
